@@ -13,6 +13,6 @@ Heap = { Old + NEW = {Eden, from, to} }，Old 即 年老代（Old Generation）�
 
 * -XX:+HeapDumpOnOutOfMemoryError：JVM会在遇到OutOfMemoryError时拍摄一个“堆转储快照”，并将其保存在一个文件中。
 
-![png](../img/2.jpg)
+
 
 参考网站: [jvm参数设置](https://docs.oracle.com/javase/8/docs/technotes/tools/unix/java.html#BABDJJFI)
