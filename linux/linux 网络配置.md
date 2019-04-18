@@ -34,7 +34,7 @@ nameserver 8.8.8.8
 ```sh
 # 重启服务
 $ cd /etc/init.d/
-$ ./networding restart
+$ ./networking restart
 # 重启电脑指令
 $ sudo init 6
 ```
