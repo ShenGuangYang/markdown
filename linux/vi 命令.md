@@ -9,6 +9,7 @@
 
 ## vi 内操作命令
 
+### 插入
 <table style="border:1px" rules="all">
   <tr>
     <th>命令</th>
@@ -49,7 +50,7 @@
   </tr>
 </table>
 
-<br/>
+### 翻页
 
 <table style="border:1px" rules="all">
   <tr>
@@ -93,6 +94,7 @@
   </tr>
 </table>
 
+## 跳转
 
 <table style="border:1px" rules="all">
   <tr>
@@ -129,6 +131,7 @@
   </tr>
 </table>
 
+### 删除
 
 <table style="border:1px" rules="all">
   <tr>
@@ -156,3 +159,49 @@
     <td>撤销当前操作</td>
   </tr>
 </table>
+
+### 查找替换
+
+<table style="border:1px" rules="all">
+  <tr>
+    <th>命令</th>
+    <th>功能</th>
+  </tr>
+  <tr>
+    <td>/word</td>
+    <td>从上往下在文件中查找字符串“word”</td>
+  </tr>
+  <tr>
+    <td>?word</td>
+    <td>从下往上在文件中查找字符串“word”</td>
+  </tr>
+  <tr>
+    <td>n</td>
+    <td>定位下一个匹配的被查找字符串</td>
+  </tr>
+  <tr>
+    <td>N</td>
+    <td>定位上一个匹配的被查找字符串</td>
+  </tr>
+  <tr>
+    <td>:s/old/new</td>
+    <td>将当前行中查找到的第一个“old”替换成“new”</td>
+  </tr>
+  <tr>
+    <td>:s/old/new/g</td>
+    <td>将当前行中查找到的所有“old”替换成“new”</td>
+  </tr>
+  <tr>
+    <td>:#,#s/old/new/g</td>
+    <td>将行号“#，#”范围内查找到的所有“old”替换成“new”</td>
+  </tr>
+  <tr>
+    <td>:%s/old/new/g</td>
+    <td>在整个文件范围内“old”替换成“new”</td>
+  </tr>
+  <tr>
+    <td>:s/old/new/c</td>
+    <td>在替换命令末尾加入c命令，将对每个替换动作提示用户确认</td>
+  </tr>
+</table>
+
