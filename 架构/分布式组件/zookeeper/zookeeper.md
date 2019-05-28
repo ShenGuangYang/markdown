@@ -198,11 +198,11 @@ watcher特性:当数据发生变化的时候，zookeeper 会产生一个watcher�
 如何触发事件？凡是事务类型的操作，都会触发监听事件。create、delete、setData
 
 ### watcher 事件类型：
-None (-1),                客户端连接状态发生变化的时候，会受到none的事件
-NodeCreated (1),          创建节点的事件
-NodeDeleted (2),          删除节点的事件
-NodeDataChanged (3),      节点数据发生变化
-NodeChildrenChanged (4);  子节点被创建、被删除、被修改
+1. None (-1),                客户端连接状态发生变化的时候，会受到none的事件
+2. NodeCreated (1),          创建节点的事件
+3. NodeDeleted (2),          删除节点的事件
+4. NodeDataChanged (3),      节点数据发生变化
+5. NodeChildrenChanged (4);  子节点被创建、被删除、被修改
 
 
 
