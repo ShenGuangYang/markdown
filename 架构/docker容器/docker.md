@@ -4,6 +4,7 @@
 ```shell
 yum install -y docker
 ```
+> 老实点修改镜像地址 ()[www.baidu.com]
 
 ## 启动
 ```shell
