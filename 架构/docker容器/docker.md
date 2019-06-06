@@ -4,7 +4,9 @@
 ```shell
 yum install -y docker
 ```
-> 老实点修改镜像地址 ()[www.baidu.com]
+
+> [老实点修改镜像地址,不然等的你奔溃](https://github.com/ShenGuangYang/my_note/blob/master/linux/centos%E4%BF%AE%E6%94%B9%E9%95%9C%E5%83%8F.md)
+
 
 ## 启动
 ```shell
