@@ -129,6 +129,8 @@ groups username
 sudo groupadd docker
 # 将登陆用户加入到docker用户组中
 sudo gpasswd -a jdimage docker
+# 刷新docker用户组 （或者重启）
+newgrp docker
 # 测试docker命令是否可以使用sudo正常使用
 docker ps
 ```
@@ -167,6 +169,46 @@ drwxr-xr-x
 # 在filanme目录及子目录 给本用户、组、其它用户添加 读写执行 
 chmod -R 777 filename
 ```
+
+
+
+## 安装jdk 8 & maven 3.6
+
+
+
+1. 下载jdk、maven [jdk下载](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) [maven下载](https://maven.apache.org/download.cgi)
+
+2. 把下载好的文件放到 `/usr/src` 
+
+3. 解压缩文件 
+
+   ```shell
+   tar -zxvf jdk... maven...
+   ```
+
+   
+
+4. 编辑```/etc/profile```
+
+5. 添加如下内容：
+
+   ```shell
+   export M2_HOME=/usr/src/apache-maven-3.6.1
+   export JAVA_HOME=/usr/src/jdk1.8.0_211
+   export PATH=$JAVA_HOME/bin:$M2_HOME/bin:$PATH
+   export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+   ```
+
+   
+
+6. 运行```source /ect/profile```
+
+7. 查看java、maven是否安装成功
+
+   ```shell
+   java -version
+   mvn -v
+   ```
 
 
 
