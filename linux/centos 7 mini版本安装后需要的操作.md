@@ -241,7 +241,7 @@ yum makecache
 vi /etc/ssh/sshd_config
 ```
 
-![img](..\\img\\xshell.png)
+![img](../img/xshell.png)
 
 
 
