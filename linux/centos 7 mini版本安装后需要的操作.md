@@ -153,3 +153,28 @@ vi /etc/ssh/sshd_config
 
 ## 防火墙设置（可选）
 
+```shell
+# 启动
+systemctl start firewalld
+# 关闭
+systemctl stop firewalld
+# 查看状态
+systemctl status firewalld 
+# 开机启动
+systemctl enable firewalld
+# 开机禁用
+systemctl disable firewalld
+
+=============
+
+# 那怎么开启一个端口呢
+# 添加（--permanent永久生效，没有此参数重启后失效）
+firewall-cmd --zone=public --add-port=80/tcp --permanent  
+# 重新载入
+firewall-cmd --reload
+# 查看
+firewall-cmd --zone= public --query-port=80/tcp
+# 删除
+firewall-cmd --zone= public --remove-port=80/tcp --permanent
+```
+
