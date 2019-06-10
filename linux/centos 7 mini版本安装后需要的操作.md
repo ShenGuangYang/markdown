@@ -66,7 +66,59 @@ service network restart
 
 
 
-## 配置yum源
+## 安装必要的工具
+
+```shell
+# 下载文件命令
+yum -y install wget
+# 命令行自动补全
+yum -y install bash-completion
+# 安装第三方软件包库
+yum -y install epel-release
+# 安装gcc gcc-c++ make
+yum -y install gcc gcc-c++ make
+# 安装vim
+yum -y install vim*
+
+# 安装ifconfig命令
+yum -y install net-tools
+# 安装完整版man-page
+yum -y install man-pages
+# 域名解析
+yum -y install bind-utils
+
+
+```
+
+
+
+## 安装docker
+
+```shell
+# 查看内核，建议3.10以上
+uanme -a
+# 更新最新yum
+yum update
+# 安装需要的软件包
+yum install -y yum-utils device-mapper-persistent-data lvm2
+# 设置yum源
+yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+# 安装docker
+yum -y install docker
+# 启动docker
+systemctl start docker
+# 设置为开机启动
+systemctl enable docker
+# 验证是否安装成功(有client和service两部分表示docker安装启动都成功了)
+docker version
+
+```
+
+
+
+
+
+## 配置yum源(可选)
 
 1. 首先备份/etc/yum.repos.d/CentOS-Base.repo
 
@@ -89,41 +141,15 @@ yum makecache
 
 
 
-## 安装必要的工具
-
-```shell
-# 命令行自动补全
-yum -y install bash-completion
-# 安装第三方软件包库
-yum -y install epel-release
-# 域名解析
-yum -y install bind-utils
-# 下载文件命令
-yum -y install wget
-# 安装ifconfig命令
-yum -y install net-tools
-# 安装vim
-yum -y install vim*
-# 安装完整版man-page
-yum install man-pages
-# 安装gcc gcc-c++ make
-yum -y install gcc gcc-c++ make
-
-
-
-```
-
-
-
-## xshell 远程连接不上问题
+## xshell 远程连接不上问题(可选)
 
 ```shell
 vi /etc/ssh/sshd_config
 ```
 
-![img](..\img\xshell)
+![img](..\img\xshell.png)
 
 
 
-## 防火墙设置
+## 防火墙设置（可选）
 
