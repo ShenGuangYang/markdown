@@ -86,8 +86,8 @@ yum -y install net-tools
 yum -y install man-pages
 # 域名解析
 yum -y install bind-utils
-
-
+# 上传下载
+yum -y install lrzsz 
 ```
 
 
