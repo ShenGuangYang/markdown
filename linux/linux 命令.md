@@ -53,3 +53,4 @@ command [option] [arguments]
 ## 快捷键
 * `ctrl c` 强制退出当前程序
 * `ctrl d` 退出当前用户
+
