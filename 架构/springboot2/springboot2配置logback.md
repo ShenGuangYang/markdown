@@ -10,6 +10,57 @@
 
 
 
+大体配置模板：
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<configuration debug="false">
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>[%d{'MM-dd HH:mm:ss,SSS',GMT+8:00}] %-5p [%.10t][%X{IP}][%X{OP}][%X{OPAS}] %logger{36}[%L] - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <append>true</append>
+        <file>./logs/http-test.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>./logs/http-test.log.%d{yyyy-MM-dd}</FileNamePattern>
+            <MaxHistory>30</MaxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="ASYNC-INFO" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>256</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref="INFO"/>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+        <!--<appender-ref ref="ASYNC-INFO" />-->
+        <appender-ref ref="INFO" />
+    </root>
+
+</configuration>
+```
+
+
+
+
+
+
+
 # 配置文件详解
 
 ## configuration
@@ -363,3 +414,29 @@ logging.path=E:/logs/test/http-test.log
 </logger>
 ```
 
+
+
+## 异步输出日志
+
+```xml
+<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <fileNamePattern>logs/context-log.%d{yyyy-MM-dd}.log</fileNamePattern>
+        <maxHistory>30</maxHistory>
+    </rollingPolicy>
+    <encoder charset="UTF-8">
+        <pattern>[%-5level] %date --%thread-- [%logger] %msg %n</pattern>
+    </encoder>
+</appender>
+ 
+<appender name ="ASYNC_FILE" class= "ch.qos.logback.classic.AsyncAppender">
+    <discardingThreshold >0</discardingThreshold>
+    <queueSize>1234</queueSize>
+    <appender-ref ref = "FILE"/>
+</appender>
+```
+
+​      由以上测试结果可以得出异步方式记录日志并不是什么情况下都能提升性能的，相反由于线程间的同步开销，甚至可能降低性能；==**只有像在JDBC操作或是SMTP之类的记录耗时比较长的情况下，使用异步入库方式才是个好选择。**==
+
+
+  

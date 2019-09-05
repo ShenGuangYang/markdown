@@ -46,7 +46,7 @@ command [option] [arguments]
   * `tail -f` 实时滚动
 
 ### 磁盘
-* `df -h` 查看磁盘情况
+* `df -h` 查看使用磁盘情况
 * `du -sh` 统计查看当前目录使用量
   * `du -sh *` 统计查看当前目录各个文件夹使用量
 
