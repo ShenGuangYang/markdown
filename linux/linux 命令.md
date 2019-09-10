@@ -60,6 +60,14 @@ command [option] [arguments]
 
 
 
+## 网络
+
+* netstat 查看网络状态
+  * netstat -pln | grep ... 查看当前所有端口
+  * netstat -an | grep 3306   //查看所有3306端口使用情况
+
+
+
 ## 快捷键
 
 * `ctrl c` 强制退出当前程序
