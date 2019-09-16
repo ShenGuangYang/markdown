@@ -57,6 +57,11 @@ command [option] [arguments]
 * `ps` 查看进程状态
   * ps -ef | grep ...  查询某个进行 然后kill 9 进程号删除
 * top 实时显示进程动态
+* 查看系统版本
+  * uname -a 查看内核信息
+  * cat /ect/issue 查看是ubuntu、centos
+  * cat /ect/lsb-release     ubuntu存在该文件
+  * cat /ect/redhat-release   centos 存在该文件
 
 
 
