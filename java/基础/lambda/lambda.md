@@ -69,7 +69,15 @@ public class Demo {
 
         // 按年份分组，并每个分组的数量
         Map<Integer, Long> groupByCount = transactions.stream().collect(groupingBy(Transaction::getYear, counting()));
-
+		
+        //根据对象中的某一个字段去重
+         List<Transaction> distinctList = transactions.stream()
+                .filter(distinctByKey(Transaction::getValue))
+                .collect(toList());
+    }
+     public static  <T> Predicate<T> distinctByKey(Function<? super T, Object> key) {
+        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+        return t -> seen.putIfAbsent(key.apply(t), Boolean.TRUE) == null;
     }
 }
 
