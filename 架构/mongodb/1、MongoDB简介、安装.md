@@ -90,7 +90,7 @@ mkdir -p /usr/local/mongodb/data/db
 mkdir -p /usr/local/mongodb/logs
 ```
 
-6、编辑MongoDB启动配置文件
+6、编辑MongoDB启动配置文件 
 
 ```shell
 /usr/local/mongodb/bin ##在此文件夹下创建一个mongodb.conf文件，手动创建并编辑。
@@ -115,6 +115,108 @@ mongod -f mongodb.conf
 ```shell
 mongo
 ```
+
+
+
+## docker安装MongoDB
+
+==所有命令均在一个文件夹下执行==
+
+1、 安装docker，创建DockerFile文件
+
+```shell
+vim DockerFile
+#添加一下内容
+FROM docker.io/mongo
+MAINTAINER "shenguangyang"<4345@qq.cn>
+ENV TZ Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+```
+
+2、 创建启动命令脚本
+
+```bash
+vim rebuild.sh
+#添加一下内容
+docker stop mongodb #停止mongodb
+docker rm mongodb   #删除容器mongodb
+docker rmi mongodb	#删除镜像mongodb
+docker build -t mongodb .   #重新构造
+docker run --privileged=true -dt 
+	-m 128M 			#内存
+	-p 27017:27017 \ 	#端口映射
+    -v /home/jdimage/docker/mongodb/logs:/logs \	#地址挂载
+    -v /home/jdimage/docker/mongodb/db:/db     \    #地址挂载
+    --name mongodb mongodb        \				#名称
+    --dbpath /db              \
+    --logpath /logs/mongo.log \
+    #--auth   #使用用户名密码
+
+```
+
+3、 本地创建dbpath、logpath目录
+
+4、运行容器
+
+```shell
+./rebuild.sh
+docker exec -it mongodb bash
+```
+
+5、MongoDB使用
+
+ 1. 用户的创建和数据库的建立
+
+    ```bash
+    mongo
+    ```
+
+ 2. 创建用户
+
+     ```bash
+        # 进入 admin 的数据库
+        use admin
+        # 创建管理员用户
+        db.createUser(
+           {
+             user: "admin",
+             pwd: "123456",
+             roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]
+           }
+         )
+         # 创建有可读写权限的用户. 对于一个特定的数据库, 比如'demo'
+         db.createUser({
+             user: 'test',
+             pwd: '123456',
+             roles: [{role: "read", db: "demo"}]
+         })
+     ```
+
+ 3. 建立数据库
+
+     ```bash
+     #使用数据库
+     use demo;
+     #先写入一条数据
+     db.info.save({name: 'test', age: '22'})
+     #查看写入的数据
+     db.info.find();
+     #结果如下
+     { "_id" : ObjectId("5c973b81de96d4661a1c1831"), "name" : "test", "age" : "22" }
+     ```
+
+ 4. 远程连接的开启
+
+     ```bash
+     #更新源、安装 vim
+     apt-get update && apt-get install vim
+     # 修改 mongo 配置文件
+     vim /etc/mongod.conf.orig
+     
+     bindIp: 127.0.0.1 #注释掉`# bindIp: 127.0.0.1` 或者改成`bindIp: 0.0.0.0` 即可开启远程连接
+     ```
+
+     
 
 
 
