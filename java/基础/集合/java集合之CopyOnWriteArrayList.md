@@ -175,5 +175,161 @@ public void add(int index, E element) {
 
 
 
+## `addIfAbsent(E e)` 方法
+
+添加一个不存在于这个集合中的元素
+
+```java
+public boolean addIfAbsent(E e) {
+    // 获取元素数组
+    Object[] snapshot = getArray();
+    // 检查元素如果不存在，返回false
+    // 存在调用addIfAbsent() 添加元素
+    return indexOf(e, snapshot, 0, snapshot.length) >= 0 ? false :
+    addIfAbsent(e, snapshot);
+}
+
+private boolean addIfAbsent(E e, Object[] snapshot) {
+    final ReentrantLock lock = this.lock;
+    // 加锁
+    lock.lock();
+    try {
+        // 获得旧数组
+        Object[] current = getArray();
+        int len = current.length;
+        // 如果快照与刚获取的数组不一致
+        // 说明有修改
+        if (snapshot != current) {
+            // 重新检查元素是否在刚获取的数组里
+            int common = Math.min(snapshot.length, len);
+            for (int i = 0; i < common; i++)
+                // 到这个方法里面了, 说明元素不在快照里面
+                if (current[i] != snapshot[i] && eq(e, current[i]))
+                    return false;
+            if (indexOf(e, current, common, len) >= 0)
+                return false;
+        }
+        // 拷贝一份n+1的数组
+        Object[] newElements = Arrays.copyOf(current, len + 1);
+        // 将元素放在最后一位
+        newElements[len] = e;
+        // 更新旧数组元素
+        setArray(newElements);
+        return true;
+    } finally {
+        // 释放锁
+        lock.unlock();
+    }
+}
+```
+
+> 代码逻辑：
+>
+> 1. 检查元素是否存在于数组中
+> 2. 如果存在直接返回false，如果不存在调用 `addIfAbsent()` 方法
+> 3. 加锁
+> 4. 如果当前数组不等于传入的快照，说明有修改，检查带添加的元素是否存在于当前数组中，如果存在直接返回false;
+> 5. 拷贝一个新数组，长度等于原数组长度加1，并把原数组元素拷贝到新数组中；
+> 6. 把新元素添加到数组最后一位；
+> 7. 把新数组赋值给当前对象的array属性，覆盖原数组；
+> 8. 释放锁；
+
+## `get(int index)` 方法
+
+获取指定索引的元素，支持随机访问，时间复杂度为 ${O(1)}$ 。
+
+```java
+public E get(int index) {
+    // 获取元素不需要加锁
+    // 直接返回index位置的元素
+    // 这里是没有做越界检查的, 因为数组本身会做越界检查
+    return get(getArray(), index);
+}
+
+private E get(Object[] a, int index) {
+    return (E) a[index];
+}
+```
+
+> 代码逻辑：
+>
+> 1. 获取元素数组
+> 2. 返回指定索引位置的元素
+
+## `remove(int index)` 方法
+
+删除指定索引位置的元素。
+
+```java
+public E remove(int index) {
+    final ReentrantLock lock = this.lock;
+    // 加锁
+    lock.lock();
+    try {
+        // 获取数组
+        Object[] elements = getArray();
+        int len = elements.length;
+        // 获取索引所在位置的元素
+        E oldValue = get(elements, index);
+        int numMoved = len - index - 1;
+        if (numMoved == 0)
+            // 如果移除的是最后一位
+            // 那么直接拷贝一份n-1的新数组, 最后一位就自动删除了
+            setArray(Arrays.copyOf(elements, len - 1));
+        else {
+            // 如果移除的不是最后一位
+            // 那么新建一个n-1的新数组
+            Object[] newElements = new Object[len - 1];
+            // 将前index的元素拷贝到新数组中
+            System.arraycopy(elements, 0, newElements, 0, index);
+            // 将index后面(不包含)的元素往前挪一位
+            // 这样正好把index位置覆盖掉了, 相当于删除了
+            System.arraycopy(elements, index + 1, newElements, index, numMoved);
+            setArray(newElements);
+        }
+        return oldValue;
+    } finally {
+        lock.unlock();
+    }
+}
+```
+
+
+
+> 代码逻辑：
+>
+> 1. 加锁
+> 2. 获取旧数组
+> 3. 获取指定索引位置的值
+> 4. 如果移除的是最后一位元素，则把原数组的前 len-1 个元素拷贝到新数组中，并把新数组拷贝到当前对象的数组属性
+> 5. 如果移除的不是最后一位元素，则新建一个 len-1 长度的数组，并把原数组除了指定索引位置的元素全部拷贝到新的数组中，并把新数组拷贝到当前对象的数组属性
+> 6. 解锁返回删除的旧值
+
+
+
+## `size()` 方法
+
+返回数组长度
+
+```java
+public int size() {
+    // 获取元素个数不需要加锁
+    // 直接返回数组长度
+    return getArray().length;
+}
+```
+
+
+
+# 总结
+
+- CopyOnWriteArrayList使用ReentrantLock重入锁加锁，保证线程安全；
+- CopyOnWriteArrayList的写操作都要先拷贝一份新数组，在新数组中做修改，修改完了再用新数组替换老数组，所以空间复杂度是O(n)，性能比较低下；
+- CopyOnWriteArrayList的读操作支持随机访问，时间复杂度为O(1)；
+- CopyOnWriteArrayList采用读写分离的思想，读操作不加锁，写操作加锁，且写操作占用较大内存空间，所以适用于读多写少的场合；
+- CopyOnWriteArrayList只保证最终一致性，不保证实时一致性；
+
+
+
 
 
