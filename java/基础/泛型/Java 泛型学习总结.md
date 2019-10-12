@@ -1,28 +1,28 @@
-# Java æ³›åž‹å­¦ä¹ æ€»ç»“
+# Java ·ºÐÍÑ§Ï°×Ü½á
 
-## å‰è¨€
+## Ç°ÑÔ
 
-Java 5 æ·»åŠ äº†æ³›åž‹ï¼Œæä¾›äº†ç¼–è¯‘æ—¶ç±»åž‹å®‰å…¨æ£€æµ‹æœºåˆ¶ï¼Œè¯¥æœºåˆ¶å…è®¸ç¨‹åºå‘˜åœ¨ç¼–è¯‘æ—¶æ£€æµ‹åˆ°éžæ³•çš„ç±»åž‹ã€‚
-æ³›åž‹çš„æœ¬è´¨æ˜¯å‚æ•°åŒ–ç±»åž‹ï¼Œå¯ä»¥ä¸ºä»¥å‰å¤„ç†é€šç”¨å¯¹è±¡çš„ç±»å’Œæ–¹æ³•ï¼ŒæŒ‡å®šå…·ä½“çš„å¯¹è±¡ç±»åž‹ã€‚å¬èµ·æ¥æœ‰ç‚¹æŠ½è±¡ï¼Œæ‰€ä»¥æˆ‘ä»¬å°†é©¬ä¸Šçœ‹ä¸€äº›æ³›åž‹ç”¨åœ¨é›†åˆä¸Šçš„ä¾‹å­ï¼š
+Java 5 Ìí¼ÓÁË·ºÐÍ£¬Ìá¹©ÁË±àÒëÊ±ÀàÐÍ°²È«¼ì²â»úÖÆ£¬¸Ã»úÖÆÔÊÐí³ÌÐòÔ±ÔÚ±àÒëÊ±¼ì²âµ½·Ç·¨µÄÀàÐÍ¡£
+·ºÐÍµÄ±¾ÖÊÊÇ²ÎÊý»¯ÀàÐÍ£¬¿ÉÒÔÎªÒÔÇ°´¦ÀíÍ¨ÓÃ¶ÔÏóµÄÀàºÍ·½·¨£¬Ö¸¶¨¾ßÌåµÄ¶ÔÏóÀàÐÍ¡£ÌýÆðÀ´ÓÐµã³éÏó£¬ËùÒÔÎÒÃÇ½«ÂíÉÏ¿´Ò»Ð©·ºÐÍÓÃÔÚ¼¯ºÏÉÏµÄÀý×Ó£º
 
-## æ³›åž‹é›†åˆ
+## ·ºÐÍ¼¯ºÏ
 
-å…ˆçœ‹ä¸€ä¸ªæ²¡æœ‰æ³›åž‹çš„é›†åˆä¾‹å­ï¼š
+ÏÈ¿´Ò»¸öÃ»ÓÐ·ºÐÍµÄ¼¯ºÏÀý×Ó£º
 ```Java
 List list = new ArrayList();
 list.add(new Integer(2));
 list.add("a String");
 ```
-å› ä¸º List å¯ä»¥æ·»åŠ ä»»ä½•å¯¹è±¡ï¼Œæ‰€ä»¥ä»Ž List ä¸­å–å‡ºçš„å¯¹è±¡æ—¶ï¼Œå› ä¸ºä¸ç¡®å®šï¼ˆListä¸è®°ä½å…ƒç´ ç±»åž‹ï¼‰å½“æ—¶å€™ä¿å­˜è¿› List çš„å…ƒç´ ç±»åž‹ï¼Œè¿™ä¸ªå¯¹è±¡çš„ç±»åž‹åªèƒ½æ˜¯ Object ï¼Œè¿˜å¿…é¡»ç”±ç¨‹åºç¼–å†™è€…è®°ä½æ·»åŠ å…ƒç´ ç±»åž‹ï¼Œç„¶åŽå–å‡ºæ—¶å†è¿›è¡Œå¼ºåˆ¶ç±»åž‹è½¬æ¢å°±ï¼Œå¦‚ä¸‹ï¼š
+ÒòÎª List ¿ÉÒÔÌí¼ÓÈÎºÎ¶ÔÏó£¬ËùÒÔ´Ó List ÖÐÈ¡³öµÄ¶ÔÏóÊ±£¬ÒòÎª²»È·¶¨£¨List²»¼Ç×¡ÔªËØÀàÐÍ£©µ±Ê±ºò±£´æ½ø List µÄÔªËØÀàÐÍ£¬Õâ¸ö¶ÔÏóµÄÀàÐÍÖ»ÄÜÊÇ Object £¬»¹±ØÐëÓÉ³ÌÐò±àÐ´Õß¼Ç×¡Ìí¼ÓÔªËØÀàÐÍ£¬È»ºóÈ¡³öÊ±ÔÙ½øÐÐÇ¿ÖÆÀàÐÍ×ª»»¾Í£¬ÈçÏÂ£º
 
 ```Java
 Integer integer = (Integer) list.get(0);
 String string   = (String) list.get(1);
 ```
 
-é€šå¸¸ï¼Œæˆ‘ä»¬åªä½¿ç”¨å¸¦æœ‰å•ä¸€ç±»åž‹å…ƒç´ çš„é›†åˆï¼Œå¹¶ä¸”ä¸å¸Œæœ›å…¶ä»–ç±»åž‹çš„å¯¹è±¡è¢«æ·»åŠ åˆ°é›†åˆä¸­ï¼Œä¾‹å¦‚ï¼Œåªæœ‰ Integer çš„ List ï¼Œä¸å¸Œæœ›å°† String å¯¹è±¡æ”¾è¿›é›†åˆï¼Œå¹¶ä¸”ä¹Ÿä¸æƒ³è‡ªå·±è®°ä½å…ƒç´ ç±»åž‹ï¼Œå¹¶ä¸”å¼ºåˆ¶ç±»åž‹è½¬æ¢è¿˜å¯èƒ½ä¼šå‡ºçŽ°é”™è¯¯ã€‚
+Í¨³££¬ÎÒÃÇÖ»Ê¹ÓÃ´øÓÐµ¥Ò»ÀàÐÍÔªËØµÄ¼¯ºÏ£¬²¢ÇÒ²»Ï£ÍûÆäËûÀàÐÍµÄ¶ÔÏó±»Ìí¼Óµ½¼¯ºÏÖÐ£¬ÀýÈç£¬Ö»ÓÐ Integer µÄ List £¬²»Ï£Íû½« String ¶ÔÏó·Å½ø¼¯ºÏ£¬²¢ÇÒÒ²²»Ïë×Ô¼º¼Ç×¡ÔªËØÀàÐÍ£¬²¢ÇÒÇ¿ÖÆÀàÐÍ×ª»»»¹¿ÉÄÜ»á³öÏÖ´íÎó¡£
 
-ä½¿ç”¨ Genericsï¼ˆæ³›åž‹ï¼‰å°±å¯ä»¥è®¾ç½®é›†åˆçš„ç±»åž‹ï¼Œä»¥é™åˆ¶å¯ä»¥å°†å“ªç§å¯¹è±¡æ’å…¥é›†åˆä¸­ã€‚ è¿™å¯ä»¥ç¡®ä¿é›†åˆä¸­çš„å…ƒç´ ï¼Œéƒ½æ˜¯åŒä¸€ç§å·²çŸ¥ç±»åž‹çš„ï¼Œå› æ­¤å–å‡ºæ•°æ®çš„æ—¶å€™å°±ä¸å¿…è¿›è¡Œå¼ºåˆ¶ç±»åž‹è½¬æ¢äº†ï¼Œä¸‹é¢æ˜¯ä¸€ä¸ª String ç±»åž‹çš„ List çš„ä½¿ç”¨ä¾‹å­ï¼š
+Ê¹ÓÃ Generics£¨·ºÐÍ£©¾Í¿ÉÒÔÉèÖÃ¼¯ºÏµÄÀàÐÍ£¬ÒÔÏÞÖÆ¿ÉÒÔ½«ÄÄÖÖ¶ÔÏó²åÈë¼¯ºÏÖÐ¡£ Õâ¿ÉÒÔÈ·±£¼¯ºÏÖÐµÄÔªËØ£¬¶¼ÊÇÍ¬Ò»ÖÖÒÑÖªÀàÐÍµÄ£¬Òò´ËÈ¡³öÊý¾ÝµÄÊ±ºò¾Í²»±Ø½øÐÐÇ¿ÖÆÀàÐÍ×ª»»ÁË£¬ÏÂÃæÊÇÒ»¸ö String ÀàÐÍµÄ List µÄÊ¹ÓÃÀý×Ó£º
 
 ```Java
 List<String> strings = new ArrayList<String>();
@@ -30,26 +30,26 @@ strings.add("a String");
 String aString = strings.get(0);
 ```
 
-ä»¥ä¸Šè¿™ä¸ª List é›†åˆåªèƒ½æ”¾å…¥ String å¯¹è±¡ï¼Œå¦‚æžœè§†å›¾æ”¾å…¥åˆ«çš„å¯¹è±¡é‚£ä¹ˆç¼–è¯‘å™¨ä¼šæŠ¥é”™ï¼Œè®©ä»£ç ç¼–å†™è€…å¿…é¡»è¿›è¡Œå¤„ç†ï¼Œè¿™å°±æ˜¯é¢å¤–çš„ç±»åž‹æ£€æŸ¥ã€‚å¦å¤–æ³¨æ„List çš„ <> å°–æ‹¬å·é‡Œé¢åªèƒ½æ˜¯å¯¹è±¡å¼•ç”¨ç±»åž‹ï¼Œä¸åŒ…æ‹¬åŸºæœ¬ç±»åž‹ï¼ˆå¯ä»¥ä½¿ç”¨å¯¹åº”åŒ…è£…ç±»ä»£æ›¿ï¼‰ã€‚
-Java æ³›åž‹ä»Ž Java 7 å¼€å§‹ï¼Œç¼–è¯‘å™¨å¯ä»¥è‡ªåŠ¨ç±»åž‹åˆ¤æ–­ï¼Œå¯ä»¥çœç•¥æž„é€ å™¨ä¸­çš„æ³›åž‹ï¼Œä¸‹é¢æ˜¯ä¸€ä¸ªJava 7 æ³›åž‹ä¾‹å­ï¼š
+ÒÔÉÏÕâ¸ö List ¼¯ºÏÖ»ÄÜ·ÅÈë String ¶ÔÏó£¬Èç¹ûÊÓÍ¼·ÅÈë±ðµÄ¶ÔÏóÄÇÃ´±àÒëÆ÷»á±¨´í£¬ÈÃ´úÂë±àÐ´Õß±ØÐë½øÐÐ´¦Àí£¬Õâ¾ÍÊÇ¶îÍâµÄÀàÐÍ¼ì²é¡£ÁíÍâ×¢ÒâList µÄ <> ¼âÀ¨ºÅÀïÃæÖ»ÄÜÊÇ¶ÔÏóÒýÓÃÀàÐÍ£¬²»°üÀ¨»ù±¾ÀàÐÍ£¨¿ÉÒÔÊ¹ÓÃ¶ÔÓ¦°ü×°Àà´úÌæ£©¡£
+Java ·ºÐÍ´Ó Java 7 ¿ªÊ¼£¬±àÒëÆ÷¿ÉÒÔ×Ô¶¯ÀàÐÍÅÐ¶Ï£¬¿ÉÒÔÊ¡ÂÔ¹¹ÔìÆ÷ÖÐµÄ·ºÐÍ£¬ÏÂÃæÊÇÒ»¸öJava 7 ·ºÐÍÀý×Ó£º
 
 ```Java
 List<String> strings = new ArrayList<>();
 ```
 
-è¿™ä¹Ÿå«åšè±å½¢è¯­æ³•ï¼ˆ<>ï¼‰ï¼Œ åœ¨ä¸Šé¢çš„ç¤ºä¾‹ä¸­ï¼Œå®žä¾‹åŒ– ArrayList çš„æ—¶å€™ï¼Œç¼–è¯‘å™¨æ ¹æ®å‰é¢ List çŸ¥é“ new çš„ ArrayList æ³›åž‹ä¿¡æ¯æ˜¯ Stringã€‚
-foreach å¾ªçŽ¯å¯ä»¥å¾ˆå¥½åœ°ä¸Žæ³›åž‹é›†åˆæ•´åˆï¼Œå¦‚ä¸‹ï¼š
+ÕâÒ²½Ð×öÁâÐÎÓï·¨£¨<>£©£¬ ÔÚÉÏÃæµÄÊ¾ÀýÖÐ£¬ÊµÀý»¯ ArrayList µÄÊ±ºò£¬±àÒëÆ÷¸ù¾ÝÇ°Ãæ List ÖªµÀ new µÄ ArrayList ·ºÐÍÐÅÏ¢ÊÇ String¡£
+foreach Ñ­»·¿ÉÒÔºÜºÃµØÓë·ºÐÍ¼¯ºÏÕûºÏ£¬ÈçÏÂ£º
 
 ```java
 List<String> strings = new ArrayList<>();
 
-// è¿™é‡Œçœç•¥å°† String å…ƒç´ æ·»åŠ è¿›é›†åˆçš„ä»£ç ...
+// ÕâÀïÊ¡ÂÔ½« String ÔªËØÌí¼Ó½ø¼¯ºÏµÄ´úÂë...
 
 for(String aString : strings){
   System.out.println(aString);
 }
 ```
-ä¹Ÿå¯ä»¥ä½¿ç”¨æ³›åž‹è¿­ä»£å™¨éåŽ†é›†åˆï¼Œå¦‚ä¸‹ï¼š
+Ò²¿ÉÒÔÊ¹ÓÃ·ºÐÍµü´úÆ÷±éÀú¼¯ºÏ£¬ÈçÏÂ£º
 
 ```java
 List<String> list = new ArrayList<>;
@@ -60,12 +60,12 @@ while(iterator.hasNext()){
   String aString = iterator.next();
 }
 ```
-æ³¨æ„ï¼Œæ³›åž‹ç±»åž‹æ£€æŸ¥ä»…åœ¨ç¼–è¯‘æ—¶å­˜åœ¨ã€‚åœ¨è¿è¡Œæ—¶ï¼Œå¯ä»¥ä½¿ç”¨åå°„æˆ–è€…å…¶ä»–æ–¹å¼ä½¿å­—ç¬¦ä¸²é›†åˆæ’å…¥å…¶ä»–å¯¹è±¡ï¼Œä½†ä¸€èˆ¬ä¸ä¼šè¿™æ ·åšã€‚
-å½“ç„¶æ³›åž‹çš„ç”¨å¤„ä¸ä»…ä»…é™äºŽé›†åˆã€‚
+×¢Òâ£¬·ºÐÍÀàÐÍ¼ì²é½öÔÚ±àÒëÊ±´æÔÚ¡£ÔÚÔËÐÐÊ±£¬¿ÉÒÔÊ¹ÓÃ·´Éä»òÕßÆäËû·½Ê½Ê¹×Ö·û´®¼¯ºÏ²åÈëÆäËû¶ÔÏó£¬µ«Ò»°ã²»»áÕâÑù×ö¡£
+µ±È»·ºÐÍµÄÓÃ´¦²»½ö½öÏÞÓÚ¼¯ºÏ¡£
 
-## æ³›åž‹ç±»
-ä»Žä¸Šé¢çš„å†…å®¹ä¸­ï¼Œæˆ‘ä»¬å·²äº†è§£æ³›åž‹çš„å¤§æ¦‚ç†å¿µã€‚
-å¯ä»¥åœ¨è‡ªå®šä¹‰ Java ç±»ä¸Šä½¿ç”¨æ³›åž‹ï¼Œå¹¶ä¸å±€é™äºŽ Java API ä¸­çš„é¢„å®šä¹‰ç±»ã€‚å®šä¹‰æ³›åž‹ç±»åªéœ€è¦åœ¨ç±»ååŽç´§è·Ÿ å°–æ‹¬å·ï¼Œå…¶ä¸­ T æ˜¯ç±»åž‹æ ‡è¯†ç¬¦ï¼Œä¹Ÿå¯ä»¥æ˜¯åˆ«çš„ï¼Œæ¯”å¦‚ E ã€V ç­‰ï¼Œå¦‚ä¸‹ä¾‹ï¼š
+## ·ºÐÍÀà
+´ÓÉÏÃæµÄÄÚÈÝÖÐ£¬ÎÒÃÇÒÑÁË½â·ºÐÍµÄ´ó¸ÅÀíÄî¡£
+¿ÉÒÔÔÚ×Ô¶¨Òå Java ÀàÉÏÊ¹ÓÃ·ºÐÍ£¬²¢²»¾ÖÏÞÓÚ Java API ÖÐµÄÔ¤¶¨ÒåÀà¡£¶¨Òå·ºÐÍÀàÖ»ÐèÒªÔÚÀàÃûºó½ô¸ú ¼âÀ¨ºÅ£¬ÆäÖÐ T ÊÇÀàÐÍ±êÊ¶·û£¬Ò²¿ÉÒÔÊÇ±ðµÄ£¬±ÈÈç E ¡¢V µÈ£¬ÈçÏÂÀý£º
 
 ```java
 public class GenericFactory<T> {
@@ -80,8 +80,8 @@ public class GenericFactory<T> {
     }
 }
 ```
-å…¶ä¸­ Class.newInstance() æ–¹æ³•æ˜¯åå°„çŸ¥è¯†çš„å†…å®¹ï¼Œè¿™é‡Œåªè¦çŸ¥é“æ­¤æ–¹æ³•ç”¨äºŽ theClass ç±»å¯¹è±¡çš„åˆ›å»ºå°±è¡Œã€‚
-T æ˜¯ä¸€ä¸ªç±»åž‹æ ‡è®°ï¼Œè¡¨ç¤ºè¿™ä¸ªæ³›åž‹ç±»åœ¨å®žä¾‹åŒ–æ—¶å¯ä»¥æ‹¥æœ‰çš„ç±»åž‹é›†ã€‚ä¸‹é¢æ˜¯ä¸€ä¸ªä¾‹å­ï¼š
+ÆäÖÐ Class.newInstance() ·½·¨ÊÇ·´ÉäÖªÊ¶µÄÄÚÈÝ£¬ÕâÀïÖ»ÒªÖªµÀ´Ë·½·¨ÓÃÓÚ theClass Àà¶ÔÏóµÄ´´½¨¾ÍÐÐ¡£
+T ÊÇÒ»¸öÀàÐÍ±ê¼Ç£¬±íÊ¾Õâ¸ö·ºÐÍÀàÔÚÊµÀý»¯Ê±¿ÉÒÔÓµÓÐµÄÀàÐÍ¼¯¡£ÏÂÃæÊÇÒ»¸öÀý×Ó£º
 
 ```java
 GenericFactory<MyClass> factory = new GenericFactory<MyClass>(MyClass.class);
@@ -90,25 +90,25 @@ MyClass myClassInstance = factory.createInstance();
 GenericFactory<SomeObject> factory1 = new GenericFactory<SomeObject>(SomeObject.class);
 SomeObject someObjectInstance = factory1.createInstance();
 ```
-ä½¿ç”¨æ³›åž‹ï¼Œæˆ‘ä»¬å°±ä¸å¿…è½¬æ¢ä»Ž factory.createInstance() æ–¹æ³•è¿”å›žçš„å¯¹è±¡ï¼Œä¼šè‡ªåŠ¨è¿”å›ž new GenericFactory çš„ <> å°–æ‹¬å·ä¸­çš„ç±»åž‹å¯¹è±¡ã€‚
+Ê¹ÓÃ·ºÐÍ£¬ÎÒÃÇ¾Í²»±Ø×ª»»´Ó factory.createInstance() ·½·¨·µ»ØµÄ¶ÔÏó£¬»á×Ô¶¯·µ»Ø new GenericFactory µÄ <> ¼âÀ¨ºÅÖÐµÄÀàÐÍ¶ÔÏó¡£
 
-## æ³›åž‹æ–¹æ³•
+## ·ºÐÍ·½·¨
 
-ä¸€ä¸ªæ³›åž‹æ–¹æ³•å®šä¹‰å¦‚ä¸‹ï¼š
+Ò»¸ö·ºÐÍ·½·¨¶¨ÒåÈçÏÂ£º
 ```java
 public static <T> T addAndReturn(T element, Collection<T> collection){
     collection.add(element);
     return element;
 }
 ```
-å…¶ä¸­ T æ˜¯æ–¹æ³•è¿”å›žå€¼ï¼Œ æ”¾åœ¨æ–¹æ³•è¿”å›žå€¼ä¹‹å‰ï¼Œæ˜¯æ‰€æœ‰æ³›åž‹æ–¹æ³•å¿…é¡»æœ‰çš„ç±»åž‹å‚æ•°å£°æ˜Žï¼Œè¡¨ç¤ºè¿™æ˜¯ä¸€ä¸ªæ³›åž‹æ–¹æ³•ï¼Œå¦‚æžœæ²¡æœ‰ åªæœ‰ T ï¼Œé‚£å°±ä¸æ˜¯æ³›åž‹æ–¹æ³•ï¼Œè€Œæ˜¯æ³›åž‹ç±»çš„ä¸€ä¸ªæˆå‘˜æ–¹æ³•ï¼Œå°±åƒä¸Šé¢æ³›åž‹ç±»å®šä¹‰çš„æ–¹æ³•ï¼š
+ÆäÖÐ T ÊÇ·½·¨·µ»ØÖµ£¬ ·ÅÔÚ·½·¨·µ»ØÖµÖ®Ç°£¬ÊÇËùÓÐ·ºÐÍ·½·¨±ØÐëÓÐµÄÀàÐÍ²ÎÊýÉùÃ÷£¬±íÊ¾ÕâÊÇÒ»¸ö·ºÐÍ·½·¨£¬Èç¹ûÃ»ÓÐ Ö»ÓÐ T £¬ÄÇ¾Í²»ÊÇ·ºÐÍ·½·¨£¬¶øÊÇ·ºÐÍÀàµÄÒ»¸ö³ÉÔ±·½·¨£¬¾ÍÏñÉÏÃæ·ºÐÍÀà¶¨ÒåµÄ·½·¨£º
 
 ```java
 public T createInstance() throws Exception { ... }
 ```
 
-è¿™ä¸æ˜¯ä¸€ä¸ªæ³›åž‹æ–¹æ³•ï¼Œè€Œæ˜¯ GenericFactoryæ³›åž‹ç±»çš„ä¸€ä¸ªæˆå‘˜æ–¹æ³•è€Œå·²ï¼Œæ³›åž‹æ–¹æ³•å¿…é¡»åœ¨æ–¹æ³•è¿”å›žå€¼ä¹‹å‰æœ‰ä¼¼äºŽ çš„æ ‡è®°ã€‚
-æ³¨æ„åœ¨æ³›åž‹æ–¹æ³•ä¸­ï¼Œå‚æ•°æœ‰ 2 ä¸ªï¼Œç¬¬ä¸€ä¸ªæ˜¯ T ç±»åž‹çš„å‚æ•°ï¼Œç¬¬äºŒä¸ªæ˜¯å…ƒç´ ç±»åž‹ä¸º T çš„ Collection é›†åˆï¼Œç¼–è¯‘å™¨ä¼šæ ¹æ®å®žé™…å‚æ•°æ¥æŽ¨æ–­ T ä¸ºä½•ç§ç±»åž‹ ï¼Œå¦‚ä¸‹è¿™æ ·æ˜¯å®Œå…¨å¯è¡Œçš„ï¼š
+Õâ²»ÊÇÒ»¸ö·ºÐÍ·½·¨£¬¶øÊÇ GenericFactory·ºÐÍÀàµÄÒ»¸ö³ÉÔ±·½·¨¶øÒÑ£¬·ºÐÍ·½·¨±ØÐëÔÚ·½·¨·µ»ØÖµÖ®Ç°ÓÐËÆÓÚ µÄ±ê¼Ç¡£
+×¢ÒâÔÚ·ºÐÍ·½·¨ÖÐ£¬²ÎÊýÓÐ 2 ¸ö£¬µÚÒ»¸öÊÇ T ÀàÐÍµÄ²ÎÊý£¬µÚ¶þ¸öÊÇÔªËØÀàÐÍÎª T µÄ Collection ¼¯ºÏ£¬±àÒëÆ÷»á¸ù¾ÝÊµ¼Ê²ÎÊýÀ´ÍÆ¶Ï T ÎªºÎÖÖÀàÐÍ £¬ÈçÏÂÕâÑùÊÇÍêÈ«¿ÉÐÐµÄ£º
 
 ```java
 String stringElement = "stringElement";
@@ -117,11 +117,11 @@ List<Object> objectList = new ArrayList<Object>();
 Object theElement = addAndReturn(stringElement, objectList);
 ```
 
-å¦‚ä¸Šï¼Œç¬¬ä¸€ä¸ªå‚æ•°ä¸º String ç±»åž‹ï¼Œç¬¬äºŒä¸ªæ˜¯ List ç±»åž‹ï¼Œè²Œä¼¼ä¸¤ä¸ª T æ˜¯ä¸åŒ¹é…çš„ï¼Œä½†æ˜¯è¿™é‡Œç¼–è¯‘å™¨ä¼šè‡ªåŠ¨å°† String è½¬æ¢ä¸º Object ç±»åž‹ï¼Œå¹¶å°† T æ ‡è¯†ä¸º Object ã€‚
+ÈçÉÏ£¬µÚÒ»¸ö²ÎÊýÎª String ÀàÐÍ£¬µÚ¶þ¸öÊÇ List ÀàÐÍ£¬Ã²ËÆÁ½¸ö T ÊÇ²»Æ¥ÅäµÄ£¬µ«ÊÇÕâÀï±àÒëÆ÷»á×Ô¶¯½« String ×ª»»Îª Object ÀàÐÍ£¬²¢½« T ±êÊ¶Îª Object ¡£
 
-## ç»§æ‰¿å…³ç³»çš„æ³›åž‹å‚æ•°
+## ¼Ì³Ð¹ØÏµµÄ·ºÐÍ²ÎÊý
 
-å®šä¹‰å¦‚ä¸‹ç±»ï¼š
+¶¨ÒåÈçÏÂÀà£º
 
 ```java
 public class A { }
@@ -129,47 +129,47 @@ public class B extends A { }
 public class C extends A { }
 ```
 
-æ–°å»ºå¹¶åˆå§‹åŒ–å¦‚ä¸‹ç±»å¯¹è±¡ï¼š
+ÐÂ½¨²¢³õÊ¼»¯ÈçÏÂÀà¶ÔÏó£º
 ```java
 List<A> listA = new ArrayList<A>();
 List<B> listB = new ArrayList<B>();
 ```
-å› ä¸º A æ˜¯ B å’Œ C ç±»çš„å…±åŒçˆ¶ç±»ï¼Œé‚£ä¹ˆ ListA æ˜¯ä¸æ˜¯ ListB å’Œ ListC çš„å…±åŒçˆ¶ç±»å—ï¼Ÿæ¢å¥è¯è¯´ï¼Œæ˜¯å¦å¯ä»¥å°† List å¼•ç”¨æŒ‡å‘ List å¯¹è±¡å‘¢ï¼Ÿæˆ–è€…åè¿‡æ¥è®© List å¼•ç”¨æŒ‡å‘ List å¯¹è±¡å‘¢ï¼Ÿ
+ÒòÎª A ÊÇ B ºÍ C ÀàµÄ¹²Í¬¸¸Àà£¬ÄÇÃ´ ListA ÊÇ²»ÊÇ ListB ºÍ ListC µÄ¹²Í¬¸¸ÀàÂð£¿»»¾ä»°Ëµ£¬ÊÇ·ñ¿ÉÒÔ½« List ÒýÓÃÖ¸Ïò List ¶ÔÏóÄØ£¿»òÕß·´¹ýÀ´ÈÃ List ÒýÓÃÖ¸Ïò List ¶ÔÏóÄØ£¿
 
-ç­”æ¡ˆæ˜¯ä¸å¯ä»¥ï¼Œç¬¬ä¸€ç§æƒ…å†µï¼Œçˆ¶ç±»å¼•ç”¨æŒ‡å‘å­ç±»å¯¹è±¡ï¼Œå¦‚å°† ListA å¼•ç”¨æŒ‡å‘ ListB å¯¹è±¡ï¼Œå…ˆå‡è®¾è¿™æ˜¯å¯ä»¥çš„ï¼Œæœ‰å¦‚ä¸‹ä»£ç ï¼š
+´ð°¸ÊÇ²»¿ÉÒÔ£¬µÚÒ»ÖÖÇé¿ö£¬¸¸ÀàÒýÓÃÖ¸Ïò×ÓÀà¶ÔÏó£¬Èç½« ListA ÒýÓÃÖ¸Ïò ListB ¶ÔÏó£¬ÏÈ¼ÙÉèÕâÊÇ¿ÉÒÔµÄ£¬ÓÐÈçÏÂ´úÂë£º
 ```java
 List<A> listA = listB;
 ```
-è¿™ä¼šå‡ºçŽ°é—®é¢˜ï¼Œå› ä¸º listA æ˜¯ List ç±»åž‹ï¼Œå®ƒå¯ä»¥æ”¾å…¥ä»»ä½• A å¯¹è±¡ä½œä¸ºå…ƒç´ ï¼Œå¯ä»¥æ”¾å…¥ B å¯¹è±¡ï¼Œä¹Ÿå¯ä»¥æ”¾å…¥ C å¯¹è±¡ï¼Œä½†æ˜¯å®ƒå®žé™…æŒ‡å‘çš„æ˜¯ä¸€ä¸ª List é›†åˆï¼ŒList é›†åˆä¸­æœ¬åº”è¯¥åªå­˜å‚¨ B ç±»å¯¹è±¡çš„ï¼ŒçŽ°åœ¨å´ä¸å¯é¢„æ–™åœ°æ”¾å…¥äº† C å¯¹è±¡ï¼Œè¿™å’Œå½“åˆçš„å®šä¹‰ä¸ç›¸ç¬¦ `List<B> listB = new ArrayList<B>();` ï¼Œæ‰€ä»¥è¿™ç§æƒ…å†µæ˜¯ä¸å…è®¸çš„ã€‚
+Õâ»á³öÏÖÎÊÌâ£¬ÒòÎª listA ÊÇ List ÀàÐÍ£¬Ëü¿ÉÒÔ·ÅÈëÈÎºÎ A ¶ÔÏó×÷ÎªÔªËØ£¬¿ÉÒÔ·ÅÈë B ¶ÔÏó£¬Ò²¿ÉÒÔ·ÅÈë C ¶ÔÏó£¬µ«ÊÇËüÊµ¼ÊÖ¸ÏòµÄÊÇÒ»¸ö List ¼¯ºÏ£¬List ¼¯ºÏÖÐ±¾Ó¦¸ÃÖ»´æ´¢ B Àà¶ÔÏóµÄ£¬ÏÖÔÚÈ´²»¿ÉÔ¤ÁÏµØ·ÅÈëÁË C ¶ÔÏó£¬ÕâºÍµ±³õµÄ¶¨Òå²»Ïà·û `List<B> listB = new ArrayList<B>();` £¬ËùÒÔÕâÖÖÇé¿öÊÇ²»ÔÊÐíµÄ¡£
 
-ç¬¬äºŒç§æƒ…å†µï¼Œè®© List å¼•ç”¨æŒ‡å‘ List å¯¹è±¡ï¼Œè¿™æ ·è‚¯å®šä¹Ÿæ˜¯ä¸å¯ä»¥çš„ï¼Œå› ä¸ºå·²å­˜åœ¨çš„ List é›†åˆä¸­ï¼Œå¯èƒ½å·²ç»å­˜åœ¨äº† A ç±»çš„éž B ç±»å­ç±»å¯¹è±¡ï¼Œå¦‚ C ç±»å¯¹è±¡ï¼Œè¿™æ ·ä¹Ÿä¸èƒ½ä¿è¯ä»Ž List é›†åˆä¸­å–å‡ºçš„å…ƒç´ ä¸€å®šå°±æ˜¯ B å¯¹è±¡ã€‚
+µÚ¶þÖÖÇé¿ö£¬ÈÃ List ÒýÓÃÖ¸Ïò List ¶ÔÏó£¬ÕâÑù¿Ï¶¨Ò²ÊÇ²»¿ÉÒÔµÄ£¬ÒòÎªÒÑ´æÔÚµÄ List ¼¯ºÏÖÐ£¬¿ÉÄÜÒÑ¾­´æÔÚÁË A ÀàµÄ·Ç B Àà×ÓÀà¶ÔÏó£¬Èç C Àà¶ÔÏó£¬ÕâÑùÒ²²»ÄÜ±£Ö¤´Ó List ¼¯ºÏÖÐÈ¡³öµÄÔªËØÒ»¶¨¾ÍÊÇ B ¶ÔÏó¡£
 
-ä½†æ˜¯ï¼Œç¡®å®žå­˜åœ¨éœ€è¦ä½¿ç”¨æ³›åž‹ç»§æ‰¿å…³ç³»çš„æƒ…å†µï¼Œçœ‹å¦‚ä¸‹ä»£ç ï¼š
+µ«ÊÇ£¬È·Êµ´æÔÚÐèÒªÊ¹ÓÃ·ºÐÍ¼Ì³Ð¹ØÏµµÄÇé¿ö£¬¿´ÈçÏÂ´úÂë£º
 
 ```java
 public void processElements(List<A> elements){
    for(A o : elements){
-      System.out.println(o.getValue()); // è¿™é‡Œå‡è®¾çš„ A ç±»å­˜åœ¨ getValue() æ–¹æ³•
+      System.out.println(o.getValue()); // ÕâÀï¼ÙÉèµÄ A Àà´æÔÚ getValue() ·½·¨
    }
 }
 ```
 
-æˆ‘ä»¬å¸Œæœ›å®šä¹‰ä¸€ä¸ªç±»ï¼Œè®©å…¶èƒ½å¤„ç†æ‰€æœ‰æŒ‡å®šç±»åž‹å…ƒç´ çš„ List ï¼Œå¦‚ processElements(List elements) æ–¹æ³•ï¼Œæ—¢å¯ä»¥å¤„ç† List ï¼Œä¹Ÿå¯ä»¥å¤„ç† List ï¼Œä½†æ˜¯å¦‚ä¸Šæ‰€è¿°ï¼Œ List å’Œ List æ ¹æœ¬å°±ä¸å­˜åœ¨ä»»ä½•ç»§æ‰¿å…³ç³»ã€‚
-è¿™æ—¶å°±å¯ä»¥ä½¿ç”¨ç±»åž‹é€šé…ç¬¦å¦‚ <?> æ¥å®Œæˆæ­¤éœ€æ±‚ã€‚
+ÎÒÃÇÏ£Íû¶¨ÒåÒ»¸öÀà£¬ÈÃÆäÄÜ´¦ÀíËùÓÐÖ¸¶¨ÀàÐÍÔªËØµÄ List £¬Èç processElements(List elements) ·½·¨£¬¼È¿ÉÒÔ´¦Àí List £¬Ò²¿ÉÒÔ´¦Àí List £¬µ«ÊÇÈçÉÏËùÊö£¬ List ºÍ List ¸ù±¾¾Í²»´æÔÚÈÎºÎ¼Ì³Ð¹ØÏµ¡£
+ÕâÊ±¾Í¿ÉÒÔÊ¹ÓÃÀàÐÍÍ¨Åä·ûÈç <?> À´Íê³É´ËÐèÇó¡£
 
-## ç±»åž‹é€šé…ç¬¦
-æœ‰ 3 ä¸­ç±»åž‹é€šé…ç¬¦ç”¨æ³•ï¼Œå¦‚ä¸‹ä»£ç ï¼š
+## ÀàÐÍÍ¨Åä·û
+ÓÐ 3 ÖÐÀàÐÍÍ¨Åä·ûÓÃ·¨£¬ÈçÏÂ´úÂë£º
 ```java
-List<?> listUknown = new ArrayList<A>(); // ä»»ä½•ç±»åž‹å…ƒç´ éƒ½å¯æŽ¥å—
-List<? extends A> listUknown = new ArrayList<A>(); // å¯æŽ¥å— A å­ç±»ç±»åž‹å…ƒç´ 
-List<? super A> listUknown = new ArrayList<A>(); // å¯æŽ¥å— A çˆ¶ç±»ç±»åž‹å…ƒç´ 
+List<?> listUknown = new ArrayList<A>(); // ÈÎºÎÀàÐÍÔªËØ¶¼¿É½ÓÊÜ
+List<? extends A> listUknown = new ArrayList<A>(); // ¿É½ÓÊÜ A ×ÓÀàÀàÐÍÔªËØ
+List<? super A> listUknown = new ArrayList<A>(); // ¿É½ÓÊÜ A ¸¸ÀàÀàÐÍÔªËØ
 ```
-è¿˜å¯ä»¥æœ‰å¤šä¸ªé™å®šï¼Œæ¯”å¦‚é™å®šè¦åŒæ—¶å¯æ¯”è¾ƒå’Œå¯åºåˆ—åŒ–ï¼Œå°±å¯ä»¥ä½¿ç”¨ `<T extends Comparable & Serializable>`
+»¹¿ÉÒÔÓÐ¶à¸öÏÞ¶¨£¬±ÈÈçÏÞ¶¨ÒªÍ¬Ê±¿É±È½ÏºÍ¿ÉÐòÁÐ»¯£¬¾Í¿ÉÒÔÊ¹ÓÃ `<T extends Comparable & Serializable>`
 
-### æ— è¾¹ç•Œç±»åž‹é€šé…ç¬¦<?>
+### ÎÞ±ß½çÀàÐÍÍ¨Åä·û<?>
 
-List<?> è¡¨ç¤ºæœªçŸ¥ç±»åž‹çš„ List ã€‚ è¿™å¯ä»¥æ˜¯ List<A>ï¼ŒList<B> æˆ– List<C> ç­‰ã€‚
-ç”±äºŽä¸çŸ¥é“ List çš„ç±»åž‹ï¼Œæ‰€ä»¥åªèƒ½ä»Žé›†åˆä¸­è¯»å–ï¼Œä¸èƒ½æ”¾å…¥æ–°å…ƒç´ ï¼Œå¹¶ä¸”åªèƒ½å°†è¯»å–çš„å…ƒç´ è§†ä¸º Object ç±»åž‹ï¼Œå¦‚ä¸‹ä¾‹ï¼š
+List<?> ±íÊ¾Î´ÖªÀàÐÍµÄ List ¡£ Õâ¿ÉÒÔÊÇ List<A>£¬List<B> »ò List<C> µÈ¡£
+ÓÉÓÚ²»ÖªµÀ List µÄÀàÐÍ£¬ËùÒÔÖ»ÄÜ´Ó¼¯ºÏÖÐ¶ÁÈ¡£¬²»ÄÜ·ÅÈëÐÂÔªËØ£¬²¢ÇÒÖ»ÄÜ½«¶ÁÈ¡µÄÔªËØÊÓÎª Object ÀàÐÍ£¬ÈçÏÂÀý£º
 ```java
 public void processElements(List<?> elements){
    for(Object o : elements){
@@ -177,16 +177,16 @@ public void processElements(List<?> elements){
    }
 }
 ```
-çŽ°åœ¨ processElements() æ–¹æ³•å¯ä»¥ä½¿ç”¨ä»»ä½•æ³›åž‹å‚æ•°çš„ List é›†åˆä½œä¸ºå‚æ•°ï¼Œå¦‚ä¸‹ï¼š
+ÏÖÔÚ processElements() ·½·¨¿ÉÒÔÊ¹ÓÃÈÎºÎ·ºÐÍ²ÎÊýµÄ List ¼¯ºÏ×÷Îª²ÎÊý£¬ÈçÏÂ£º
 
 ```java
 List<A> listA = new ArrayList<A>();
 processElements(listA);
 ```
 
-### ä¸Šç•Œç±»åž‹é€šé…ç¬¦<? extends A>
-è¿™æ ·å°†è¡¨ç¤ºå¯æŽ¥å—çš„æ³›åž‹å‚æ•°ï¼Œå¿…é¡»æ˜¯ A ç±»æˆ–è€… A ç±»çš„å­ç±»ï¼ŒA ç±»å°±æ˜¯æœ€å¤§çš„èŒƒå›´ï¼Œæ‰€ä»¥å«åšä¸Šç•Œã€‚
-å®šä¹‰å¦‚ä¸‹æ–¹æ³•ï¼š
+### ÉÏ½çÀàÐÍÍ¨Åä·û<? extends A>
+ÕâÑù½«±íÊ¾¿É½ÓÊÜµÄ·ºÐÍ²ÎÊý£¬±ØÐëÊÇ A Àà»òÕß A ÀàµÄ×ÓÀà£¬A Àà¾ÍÊÇ×î´óµÄ·¶Î§£¬ËùÒÔ½Ð×öÉÏ½ç¡£
+¶¨ÒåÈçÏÂ·½·¨£º
 ```java
 public void processElements(List<? extends A> elements){
    for(A a : elements){
@@ -194,7 +194,7 @@ public void processElements(List<? extends A> elements){
    }
 }
 ```
-è¿™æ ·ï¼Œå®ƒå¯ä»¥æŽ¥æ”¶ List, List æˆ– List é›†åˆä½œä¸ºå‚æ•°ï¼Œå¦‚ä¸‹ï¼š
+ÕâÑù£¬Ëü¿ÉÒÔ½ÓÊÕ List, List »ò List ¼¯ºÏ×÷Îª²ÎÊý£¬ÈçÏÂ£º
 ```java
 List<A> listA = new ArrayList<A>();
 processElements(listA);
@@ -205,14 +205,14 @@ processElements(listB);
 List<C> listC = new ArrayList<C>();
 processElements(listC);
 ```
-ä½† ```processElements(List<? extends A> elements)``` æ–¹æ³•ä»ç„¶æ— æ³•æ’å…¥å…ƒç´ åˆ° List ä¸­ï¼Œå› ä¸ºä¸çŸ¥é“ä¼ å…¥çš„ List ä¸­çš„å…ƒç´ çš„å…·ä½“ç±»åž‹ï¼Œå®ƒå¯èƒ½æ˜¯ A, B æˆ– C ç±» ï¼Œå¦‚æžœæ’å…¥æˆåŠŸï¼Œé‚£ä¹ˆå–å‡ºæ¥çš„æ—¶å€™å°±æ— æ³•ç¡®è®¤ï¼Œå¼ºåˆ¶è½¬æ¢å°±ä¼šå¤±è´¥ã€‚
+µ« ```processElements(List<? extends A> elements)``` ·½·¨ÈÔÈ»ÎÞ·¨²åÈëÔªËØµ½ List ÖÐ£¬ÒòÎª²»ÖªµÀ´«ÈëµÄ List ÖÐµÄÔªËØµÄ¾ßÌåÀàÐÍ£¬Ëü¿ÉÄÜÊÇ A, B »ò C Àà £¬Èç¹û²åÈë³É¹¦£¬ÄÇÃ´È¡³öÀ´µÄÊ±ºò¾ÍÎÞ·¨È·ÈÏ£¬Ç¿ÖÆ×ª»»¾Í»áÊ§°Ü¡£
 
-ä½†æ˜¯å¯ä»¥è¯»å–å…ƒç´ ï¼Œå› ä¸º List é‡Œé¢å·²ä¿å­˜çš„å…ƒç´ ä¸€å®šæ˜¯ A ç±»æˆ–å…¶å­ç±»å¯¹è±¡ï¼Œè½¬æ¢æˆ A ç±»ä¸ä¼šæŠ¥é”™ã€‚
+µ«ÊÇ¿ÉÒÔ¶ÁÈ¡ÔªËØ£¬ÒòÎª List ÀïÃæÒÑ±£´æµÄÔªËØÒ»¶¨ÊÇ A Àà»òÆä×ÓÀà¶ÔÏó£¬×ª»»³É A Àà²»»á±¨´í¡£
 
-### ä¸‹ç•Œç±»åž‹é€šé…ç¬¦ <? super A>
+### ÏÂ½çÀàÐÍÍ¨Åä·û <? super A>
 
-è¿™æ ·å°†è¡¨ç¤ºå¯æŽ¥å—çš„æ³›åž‹å‚æ•°ï¼Œå¿…é¡»æ˜¯ A ç±»ï¼ˆA ç±»çš„å­ç±»ä¹Ÿå±žäºŽ A ç±»ï¼‰æˆ–è€… A ç±»çš„çˆ¶ç±»ï¼ŒA ç±»å°±æ˜¯æœ€å°çš„èŒƒå›´ï¼Œæ‰€ä»¥å«åšä¸‹ç•Œã€‚
-å½“çŸ¥é“ List ä¸­çš„å…ƒç´ è‚¯å®šæ˜¯ A ç±»æˆ– A çš„çˆ¶ç±»æ—¶ï¼Œå¯ä»¥å®‰å…¨åœ°å°† A ç±»çš„å¯¹è±¡æˆ– A çš„å­ç±»å¯¹è±¡ï¼ˆä¾‹å¦‚ B æˆ– Cï¼‰æ’å…¥ List ä¸­ã€‚ ä¸‹é¢æ˜¯ä¸€ä¸ªä¾‹å­ï¼š
+ÕâÑù½«±íÊ¾¿É½ÓÊÜµÄ·ºÐÍ²ÎÊý£¬±ØÐëÊÇ A Àà£¨A ÀàµÄ×ÓÀàÒ²ÊôÓÚ A Àà£©»òÕß A ÀàµÄ¸¸Àà£¬A Àà¾ÍÊÇ×îÐ¡µÄ·¶Î§£¬ËùÒÔ½Ð×öÏÂ½ç¡£
+µ±ÖªµÀ List ÖÐµÄÔªËØ¿Ï¶¨ÊÇ A Àà»ò A µÄ¸¸ÀàÊ±£¬¿ÉÒÔ°²È«µØ½« A ÀàµÄ¶ÔÏó»ò A µÄ×ÓÀà¶ÔÏó£¨ÀýÈç B »ò C£©²åÈë List ÖÐ¡£ ÏÂÃæÊÇÒ»¸öÀý×Ó£º
 
 ```java
 public static void insertElements(List<? super A> list){
@@ -221,8 +221,8 @@ public static void insertElements(List<? super A> list){
     list.add(new C());
 }
 ```
-æ­¤å¤„æ’å…¥çš„æ‰€æœ‰å…ƒç´ éƒ½æ˜¯ A ç±»å¯¹è±¡æˆ– A ç±»çš„çˆ¶ç±»çš„å¯¹è±¡ã€‚ç”±äºŽ B å’Œ C éƒ½ç»§æ‰¿äº† A ï¼Œå¦‚æžœ A æœ‰ä¸€ä¸ªçˆ¶ç±»ï¼ŒB å’Œ C ä¹Ÿå°†æ˜¯è¯¥çˆ¶ç±»çš„å¯¹è±¡ã€‚
-çŽ°åœ¨å¯ä»¥ä½¿ç”¨ List æˆ–ç±»åž‹ä¸º A çš„çˆ¶ç±»è°ƒç”¨`insertElements()`ï¼Œå¦‚ä¸‹ç±»ï¼š
+´Ë´¦²åÈëµÄËùÓÐÔªËØ¶¼ÊÇ A Àà¶ÔÏó»ò A ÀàµÄ¸¸ÀàµÄ¶ÔÏó¡£ÓÉÓÚ B ºÍ C ¶¼¼Ì³ÐÁË A £¬Èç¹û A ÓÐÒ»¸ö¸¸Àà£¬B ºÍ C Ò²½«ÊÇ¸Ã¸¸ÀàµÄ¶ÔÏó¡£
+ÏÖÔÚ¿ÉÒÔÊ¹ÓÃ List »òÀàÐÍÎª A µÄ¸¸Ààµ÷ÓÃ`insertElements()`£¬ÈçÏÂÀà£º
 
 ```java
 List<A> listA = new ArrayList<A>();
@@ -231,24 +231,24 @@ insertElements(listA);
 List<Object> listObject = new ArrayList<Object>();
 insertElements(listObject);
 ```
-ä½†æ˜¯ï¼ŒinsertElements() æ–¹æ³•æ— æ³•ä»Ž List ä¸­è¯»å–å…ƒç´ ï¼Œé™¤éžå®ƒå°†è¯»å–åˆ°çš„å¯¹è±¡å¼ºåˆ¶è½¬æ¢ä¸º Object ã€‚ è°ƒç”¨ insertElements() æ—¶ï¼ŒList ä¸­å·²ç»å­˜åœ¨çš„å…ƒç´ å¯ä»¥æ˜¯ A ç±»æˆ–å…¶çˆ¶ç±»çš„ä»»ä½•ç±»åž‹ï¼Œä½†ä¸çŸ¥é“å®ƒæ˜¯å“ªä¸ªç±»ã€‚ ç”±äºŽ Java æ‰€æœ‰çš„ç±»éƒ½æ˜¯ Object çš„å­ç±»ï¼Œå› æ­¤å¦‚æžœå°†å®ƒä»¬è½¬æ¢ä¸º Object ï¼Œåˆ™å¯ä»¥ä»Žåˆ—è¡¨ä¸­è¯»å–å¯¹è±¡ã€‚å¦‚ä¸‹ä»£ç æ˜¯æ­£ç¡®çš„ï¼š
+µ«ÊÇ£¬insertElements() ·½·¨ÎÞ·¨´Ó List ÖÐ¶ÁÈ¡ÔªËØ£¬³ý·ÇËü½«¶ÁÈ¡µ½µÄ¶ÔÏóÇ¿ÖÆ×ª»»Îª Object ¡£ µ÷ÓÃ insertElements() Ê±£¬List ÖÐÒÑ¾­´æÔÚµÄÔªËØ¿ÉÒÔÊÇ A Àà»òÆä¸¸ÀàµÄÈÎºÎÀàÐÍ£¬µ«²»ÖªµÀËüÊÇÄÄ¸öÀà¡£ ÓÉÓÚ Java ËùÓÐµÄÀà¶¼ÊÇ Object µÄ×ÓÀà£¬Òò´ËÈç¹û½«ËüÃÇ×ª»»Îª Object £¬Ôò¿ÉÒÔ´ÓÁÐ±íÖÐ¶ÁÈ¡¶ÔÏó¡£ÈçÏÂ´úÂëÊÇÕýÈ·µÄ£º
 
 ```java
 Object object = list.get(0);
 ```
-ä½†æ˜¯å¦‚ä¸‹ä»£ç æ˜¯é”™è¯¯çš„ï¼Œå› ä¸ºçˆ¶ç±»å¯¹è±¡ä¸èƒ½è½¬æ¢ä¸ºå­ç±»å¯¹è±¡ï¼š
+µ«ÊÇÈçÏÂ´úÂëÊÇ´íÎóµÄ£¬ÒòÎª¸¸Àà¶ÔÏó²»ÄÜ×ª»»Îª×ÓÀà¶ÔÏó£º
 
 ```java
 A object = list.get(0);
 ```
 
-## æ³›åž‹æ“¦é™¤
-Java è¯­è¨€ä¸­çš„æ³›åž‹åªåœ¨ç¨‹åºæºç ä¸­å­˜åœ¨ï¼Œåœ¨ç¼–è¯‘åŽçš„å­—èŠ‚ç æ–‡ä»¶ä¸­ï¼Œå°±å·²ç»æ›¿æ¢ä¸ºåŽŸæ¥çš„åŽŸç”Ÿç±»åž‹ï¼ˆRaw Typeï¼Œä¹Ÿç§°ä¸ºè£¸ç±»åž‹ï¼‰äº†ï¼Œå¹¶ä¸”åœ¨ç›¸åº”çš„åœ°æ–¹æ’å…¥äº†å¼ºåˆ¶è½¬åž‹ä»£ç ï¼Œå› æ­¤ï¼Œå¯¹äºŽè¿è¡ŒæœŸçš„ Java è¯­è¨€æ¥è¯´ï¼ŒArrayListï¼œintï¼žä¸Ž ArrayListï¼œStringï¼žå°±æ˜¯åŒä¸€ä¸ªç±»ï¼Œæ‰€ä»¥æ³›åž‹æŠ€æœ¯å®žé™…ä¸Šæ˜¯ Java è¯­è¨€çš„ä¸€é¢—è¯­æ³•ç³–ï¼Œè¿™å°±æ˜¯æ³›åž‹æ“¦é™¤ï¼ŒåŸºäºŽè¿™ç§æ–¹æ³•å®žçŽ°çš„æ³›åž‹ç§°ä¸ºä¼ªæ³›åž‹ã€‚
+## ·ºÐÍ²Á³ý
+Java ÓïÑÔÖÐµÄ·ºÐÍÖ»ÔÚ³ÌÐòÔ´ÂëÖÐ´æÔÚ£¬ÔÚ±àÒëºóµÄ×Ö½ÚÂëÎÄ¼þÖÐ£¬¾ÍÒÑ¾­Ìæ»»ÎªÔ­À´µÄÔ­ÉúÀàÐÍ£¨Raw Type£¬Ò²³ÆÎªÂãÀàÐÍ£©ÁË£¬²¢ÇÒÔÚÏàÓ¦µÄµØ·½²åÈëÁËÇ¿ÖÆ×ªÐÍ´úÂë£¬Òò´Ë£¬¶ÔÓÚÔËÐÐÆÚµÄ Java ÓïÑÔÀ´Ëµ£¬ArrayList£¼int£¾Óë ArrayList£¼String£¾¾ÍÊÇÍ¬Ò»¸öÀà£¬ËùÒÔ·ºÐÍ¼¼ÊõÊµ¼ÊÉÏÊÇ Java ÓïÑÔµÄÒ»¿ÅÓï·¨ÌÇ£¬Õâ¾ÍÊÇ·ºÐÍ²Á³ý£¬»ùÓÚÕâÖÖ·½·¨ÊµÏÖµÄ·ºÐÍ³ÆÎªÎ±·ºÐÍ¡£
 
-Java çš„æ³›åž‹æ˜¯ä¼ªæ³›åž‹ï¼Œä»…ä»…æä¾›ç¼–è¯‘æ—¶æ£€æŸ¥ï¼Œæ³›åž‹ç¡®ä¿äº†åªè¦åœ¨ç¼–è¯‘æ—¶ä¸å‡ºçŽ°é”™è¯¯ï¼Œè¿è¡Œæ—¶å°±ä¸å‡ºçŽ°å¼ºåˆ¶è½¬æ¢å¼‚å¸¸ã€‚åœ¨ç¼–è¯‘å®ŒæˆåŽï¼Œæ‰€æœ‰çš„æ³›åž‹ä¿¡æ¯éƒ½ä¼šè¢«æ“¦é™¤æŽ‰ï¼Œæ³›åž‹é™„å¸¦çš„ç±»åž‹ä¿¡æ¯å¯¹ JVM æ˜¯ä¸å¯è§çš„ã€‚
+Java µÄ·ºÐÍÊÇÎ±·ºÐÍ£¬½ö½öÌá¹©±àÒëÊ±¼ì²é£¬·ºÐÍÈ·±£ÁËÖ»ÒªÔÚ±àÒëÊ±²»³öÏÖ´íÎó£¬ÔËÐÐÊ±¾Í²»³öÏÖÇ¿ÖÆ×ª»»Òì³£¡£ÔÚ±àÒëÍê³Éºó£¬ËùÓÐµÄ·ºÐÍÐÅÏ¢¶¼»á±»²Á³ýµô£¬·ºÐÍ¸½´øµÄÀàÐÍÐÅÏ¢¶Ô JVM ÊÇ²»¿É¼ûµÄ¡£
 
-### å½“æ³›åž‹é‡è§é‡è½½
-å®šä¹‰ 2 ä¸ªåˆ†åˆ«å¤„ç† List å’Œ List å…ƒç´ çš„ processElements() å‡½æ•°ï¼Œä»£ç å¦‚ä¸‹ï¼š
+### µ±·ºÐÍÓö¼ûÖØÔØ
+¶¨Òå 2 ¸ö·Ö±ð´¦Àí List ºÍ List ÔªËØµÄ processElements() º¯Êý£¬´úÂëÈçÏÂ£º
 
 ```java
 public void processElements(List<String> elements) {
@@ -256,10 +256,10 @@ public void processElements(List<String> elements) {
 public void processElements(List<Integer> elements) {
 }
 ```
-ç¼–è¯‘å™¨ä¼šæŠ¥å¦‚ä¸‹é”™è¯¯ï¼š
-Error:(12, 17) java: åç§°å†²çª: processElements(java.util.List<java.lang.Integer>)å’ŒprocessElements(java.util.List<java.lang.String>)å…·æœ‰ç›¸åŒç–‘ç¬¦
+±àÒëÆ÷»á±¨ÈçÏÂ´íÎó£º
+Error:(12, 17) java: Ãû³Æ³åÍ»: processElements(java.util.List<java.lang.Integer>)ºÍprocessElements(java.util.List<java.lang.String>)¾ßÓÐÏàÍ¬ÒÉ·û
 
-æ„æ€å°±æ˜¯æˆ‘ä»¬å®šä¹‰äº† 2 ä¸ªé‡å¤çš„æ–¹æ³•ï¼Œå³ä¸¤ä¸ªæ–¹æ³•çš„ç‰¹å¾ç­¾åï¼ˆæ–¹æ³•ç®€å•åå’Œæ–¹æ³•ä¸­å„ä¸ªå‚æ•°åœ¨å¸¸é‡æ± ä¸­çš„å­—æ®µç¬¦å·å¼•ç”¨çš„é›†åˆï¼‰æ˜¯ä¸€æ ·çš„ï¼Œè¯´æ˜Žè™½ç„¶æ³›åž‹å‚æ•°ä¸ä¸€æ ·ï¼Œä½†åˆ°åº• List å’Œ List æ˜¯ä¸€ä¸ªä¸œè¥¿ï¼Œå®ƒä»¬çš„åŽŸå§‹ç±»åž‹æ˜¯ä¸€æ ·çš„ï¼Œéƒ½æ˜¯åŒä¸€ä¸ª List ç±»å¯¹è±¡ï¼Œå¯ä»¥ä½¿ç”¨å¦‚ä¸‹ä»£ç éªŒè¯ï¼š
+ÒâË¼¾ÍÊÇÎÒÃÇ¶¨ÒåÁË 2 ¸öÖØ¸´µÄ·½·¨£¬¼´Á½¸ö·½·¨µÄÌØÕ÷Ç©Ãû£¨·½·¨¼òµ¥ÃûºÍ·½·¨ÖÐ¸÷¸ö²ÎÊýÔÚ³£Á¿³ØÖÐµÄ×Ö¶Î·ûºÅÒýÓÃµÄ¼¯ºÏ£©ÊÇÒ»ÑùµÄ£¬ËµÃ÷ËäÈ»·ºÐÍ²ÎÊý²»Ò»Ñù£¬µ«µ½µ× List ºÍ List ÊÇÒ»¸ö¶«Î÷£¬ËüÃÇµÄÔ­Ê¼ÀàÐÍÊÇÒ»ÑùµÄ£¬¶¼ÊÇÍ¬Ò»¸ö List Àà¶ÔÏó£¬¿ÉÒÔÊ¹ÓÃÈçÏÂ´úÂëÑéÖ¤£º
 
 ```java
 Class strListClass = new ArrayList<String>().getClass();
@@ -268,28 +268,28 @@ System.out.println(strListClass); // class java.util.ArrayList
 System.out.println(intListClass); // class java.util.ArrayList
 System.out.println(strListClass == intListClass); // ture
 ```
-é‚£ä¹ˆæŠŠå…¶ä¸­ä¸€ä¸ªæ–¹æ³•çš„è¿”å›žå€¼ä¿®æ”¹æˆå’Œå¦ä¸€ä¸ªä¸ä¸€æ ·ï¼Œå¯ä»¥é‡è½½æˆåŠŸå—ï¼Ÿ
+ÄÇÃ´°ÑÆäÖÐÒ»¸ö·½·¨µÄ·µ»ØÖµÐÞ¸Ä³ÉºÍÁíÒ»¸ö²»Ò»Ñù£¬¿ÉÒÔÖØÔØ³É¹¦Âð£¿
 ```java
 public String processElements(List<String> elements) {
 }
 ```
-å¾ˆæ˜Žæ˜¾ï¼Œä¹Ÿä¼šæç¤ºä¸€æ ·çš„æŠ¥é”™ï¼Œæ— æ³•é€šè¿‡ç¼–è¯‘ï¼Œå› ä¸ºæ–¹æ³•è¿”å›žå€¼æ˜¯ä¸å‚ä¸Žé‡è½½é€‰æ‹©çš„ï¼Œé‚£ä¸ºä»€ä¹ˆå‘¢ï¼Ÿ
+ºÜÃ÷ÏÔ£¬Ò²»áÌáÊ¾Ò»ÑùµÄ±¨´í£¬ÎÞ·¨Í¨¹ý±àÒë£¬ÒòÎª·½·¨·µ»ØÖµÊÇ²»²ÎÓëÖØÔØÑ¡ÔñµÄ£¬ÄÇÎªÊ²Ã´ÄØ£¿
 
-å› ä¸ºè°ƒç”¨ä¸€ä¸ªå‡½æ•°ï¼Œå¹¶ä¸ä¸€å®šéœ€è¦æŽ¥å—å®ƒè¿”å›žå€¼ï¼Œå¦‚æžœå¯ä»¥æ ¹æ®è¿”å›žå€¼é‡è½½ï¼Œé‚£ä¹ˆè°ƒç”¨ `processElements(list);` æ—¶ï¼Œç¼–è¯‘å™¨å¹¶ä¸çŸ¥é“æœŸæœ›è¿”å›žçš„å€¼æ˜¯ä»€ä¹ˆï¼Œå› ä¸ºæˆ‘ä»¬æ ¹æœ¬å°±ä¸éœ€è¦è¿”å›žå€¼ï¼Œæ‰€ä»¥ç¼–è¯‘å™¨å°±ä¸çŸ¥é“å…·ä½“è¦è°ƒç”¨å“ªä¸ªæ–¹æ³•ã€‚
-äº†è§£è™šæ‹Ÿæœºçš„æœ‹å‹å¯èƒ½çŸ¥é“ï¼Œä»Ž Class æ–‡ä»¶æ–¹æ³•è¡¨ï¼ˆmethod_infoï¼‰çš„æ•°æ®ç»“æž„æ¥çœ‹ï¼Œæ–¹æ³•é‡è½½è¦æ±‚æ–¹æ³•å…·å¤‡ä¸åŒçš„ç‰¹å¾ç­¾åï¼Œè¿”å›žå€¼å¹¶ä¸åŒ…å«åœ¨æ–¹æ³•çš„ç‰¹å¾ç­¾åä¹‹ä¸­ï¼Œæ‰€ä»¥è¿”å›žå€¼ä¸å‚ä¸Žé‡è½½é€‰æ‹©ã€‚
+ÒòÎªµ÷ÓÃÒ»¸öº¯Êý£¬²¢²»Ò»¶¨ÐèÒª½ÓÊÜËü·µ»ØÖµ£¬Èç¹û¿ÉÒÔ¸ù¾Ý·µ»ØÖµÖØÔØ£¬ÄÇÃ´µ÷ÓÃ `processElements(list);` Ê±£¬±àÒëÆ÷²¢²»ÖªµÀÆÚÍû·µ»ØµÄÖµÊÇÊ²Ã´£¬ÒòÎªÎÒÃÇ¸ù±¾¾Í²»ÐèÒª·µ»ØÖµ£¬ËùÒÔ±àÒëÆ÷¾Í²»ÖªµÀ¾ßÌåÒªµ÷ÓÃÄÄ¸ö·½·¨¡£
+ÁË½âÐéÄâ»úµÄÅóÓÑ¿ÉÄÜÖªµÀ£¬´Ó Class ÎÄ¼þ·½·¨±í£¨method_info£©µÄÊý¾Ý½á¹¹À´¿´£¬·½·¨ÖØÔØÒªÇó·½·¨¾ß±¸²»Í¬µÄÌØÕ÷Ç©Ãû£¬·µ»ØÖµ²¢²»°üº¬ÔÚ·½·¨µÄÌØÕ÷Ç©ÃûÖ®ÖÐ£¬ËùÒÔ·µ»ØÖµ²»²ÎÓëÖØÔØÑ¡Ôñ¡£
 
-åŽŸå§‹ç±»åž‹ï¼ˆraw typeï¼‰å°±æ˜¯æ“¦é™¤ï¼ˆcrasedï¼‰æŽ‰æ³›åž‹ä¿¡æ¯åŽçš„çœŸæ­£ç±»åž‹ï¼Œæ³›åž‹å‚æ•°ä¿¡æ¯ä¼šè¢«æ“¦é™¤ï¼Œè¿è¡Œæ—¶æœ€ç»ˆä½¿ç”¨ Object æˆ–å…·ä½“çš„é™å®šç±»ã€‚
-åŽŸå§‹ç±»åž‹ï¼ˆraw typeï¼‰å°±æ˜¯æ“¦é™¤ï¼ˆcrasedï¼‰æŽ‰æ³›åž‹ä¿¡æ¯åŽçš„çœŸæ­£ç±»åž‹ï¼Œæ³›åž‹å‚æ•°ä¿¡æ¯ä¼šè¢«æ“¦é™¤ï¼Œè¿è¡Œæ—¶æœ€ç»ˆä½¿ç”¨ Object æˆ–å…·ä½“çš„é™å®šç±»ã€‚å¦‚`Class strListClass = new ArrayList<String>().getClass();` ç¼–è¯‘åŽæ‚”å˜æˆ
+Ô­Ê¼ÀàÐÍ£¨raw type£©¾ÍÊÇ²Á³ý£¨crased£©µô·ºÐÍÐÅÏ¢ºóµÄÕæÕýÀàÐÍ£¬·ºÐÍ²ÎÊýÐÅÏ¢»á±»²Á³ý£¬ÔËÐÐÊ±×îÖÕÊ¹ÓÃ Object »ò¾ßÌåµÄÏÞ¶¨Àà¡£
+Ô­Ê¼ÀàÐÍ£¨raw type£©¾ÍÊÇ²Á³ý£¨crased£©µô·ºÐÍÐÅÏ¢ºóµÄÕæÕýÀàÐÍ£¬·ºÐÍ²ÎÊýÐÅÏ¢»á±»²Á³ý£¬ÔËÐÐÊ±×îÖÕÊ¹ÓÃ Object »ò¾ßÌåµÄÏÞ¶¨Àà¡£Èç`Class strListClass = new ArrayList<String>().getClass();` ±àÒëºó»Ú±ä³É
 `Class strListClass = new ArrayList().getClass();`
 
-## å…¶ä»–
+## ÆäËû
 
-JDK æ–‡æ¡£ä¸­ç»å¸¸èƒ½çœ‹åˆ° Tã€Kã€Vã€Eã€N ç­‰ç±»åž‹å‚æ•°ï¼Œå®žé™…ä¸Šè¿™äº›ç¬¦å·éšæ„é€‰æ‹©ä½¿ç”¨ä¹Ÿæ˜¯æ²¡é—®é¢˜çš„ï¼Œç”šè‡³å¯ä»¥ä½¿ç”¨å¦‚ Aã€B ç­‰ï¼Œä½†å»ºè®®å’Œ JDK æ–‡æ¡£é£Žæ ¼ä¿æŒä¸€è‡´ï¼Œè‡³å°‘å¾—è®©äººå®¹æ˜“ç†è§£ã€‚
-å¸¸è§å„ç¬¦å·çš„å«ä¹‰ï¼š
-Tï¼štype
-Kï¼škey
-Vï¼švalue
-Eï¼šelement
-Nï¼šNumber
+JDK ÎÄµµÖÐ¾­³£ÄÜ¿´µ½ T¡¢K¡¢V¡¢E¡¢N µÈÀàÐÍ²ÎÊý£¬Êµ¼ÊÉÏÕâÐ©·ûºÅËæÒâÑ¡ÔñÊ¹ÓÃÒ²ÊÇÃ»ÎÊÌâµÄ£¬ÉõÖÁ¿ÉÒÔÊ¹ÓÃÈç A¡¢B µÈ£¬µ«½¨ÒéºÍ JDK ÎÄµµ·ç¸ñ±£³ÖÒ»ÖÂ£¬ÖÁÉÙµÃÈÃÈËÈÝÒ×Àí½â¡£
+³£¼û¸÷·ûºÅµÄº¬Òå£º
+T£ºtype
+K£ºkey
+V£ºvalue
+E£ºelement
+N£ºNumber
 
-## æ³›åž‹æ•°ç»„
+## ·ºÐÍÊý×é
