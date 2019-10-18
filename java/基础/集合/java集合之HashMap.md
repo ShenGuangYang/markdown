@@ -14,9 +14,9 @@ HashMap采用key/value存储结构，每个key对应唯一的value，查询和�
 
 
 
+# 存储结构
 
-
-
+![structure](../../../img/collection/hashmap_structure.png)
 
 # 源码解析
 
