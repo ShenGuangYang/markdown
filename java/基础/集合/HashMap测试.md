@@ -164,3 +164,4 @@ if (tab == null || (n = tab.length) < MIN_TREEIFY_CAPACITY)
 此时table已中第一个是红黑树，第二个依然是链表。 所以由链表变成红黑树也只是当前桶挂载的bin会进行转换，不会影响其它桶的数据结构。
 
 ![4](../../../img/collection/hashmap_4.png)
+
