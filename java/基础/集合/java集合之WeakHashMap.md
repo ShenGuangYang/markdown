@@ -48,65 +48,407 @@ private final ReferenceQueue<Object> queue = new ReferenceQueue<>();
 
 
 
-# Entry内部类
+## Entry内部类
 
 ```java
 private static class Entry<K,V> extends WeakReference<Object> implements Map.Entry<K,V> {
+    // 可以发现没有key, 因为key是作为弱引用存到Referen类中
     V value;
     final int hash;
     Entry<K,V> next;
 
-    /**
-         * Creates new entry.
-         */
     Entry(Object key, V value,
           ReferenceQueue<Object> queue,
           int hash, Entry<K,V> next) {
+        // 调用WeakReference的构造方法初始化key和引用队列
         super(key, queue);
         this.value = value;
         this.hash  = hash;
         this.next  = next;
     }
-
-    @SuppressWarnings("unchecked")
-    public K getKey() {
-        return (K) WeakHashMap.unmaskNull(get());
+}
+public class WeakReference<T> extends Reference<T> {
+	// 调用Reference的构造方法初始化key和引用队列
+    public WeakReference(T referent, ReferenceQueue<? super T> q) {
+        super(referent, q);
     }
+}
 
-    public V getValue() {
-        return value;
-    }
-
-    public V setValue(V newValue) {
-        V oldValue = value;
-        value = newValue;
-        return oldValue;
-    }
-
-    public boolean equals(Object o) {
-        if (!(o instanceof Map.Entry))
-            return false;
-        Map.Entry<?,?> e = (Map.Entry<?,?>)o;
-        K k1 = getKey();
-        Object k2 = e.getKey();
-        if (k1 == k2 || (k1 != null && k1.equals(k2))) {
-            V v1 = getValue();
-            Object v2 = e.getValue();
-            if (v1 == v2 || (v1 != null && v1.equals(v2)))
-                return true;
-        }
-        return false;
-    }
-
-    public int hashCode() {
-        K k = getKey();
-        V v = getValue();
-        return Objects.hashCode(k) ^ Objects.hashCode(v);
-    }
-
-    public String toString() {
-        return getKey() + "=" + getValue();
+public abstract class Reference<T> {
+	// 实际存储key的地方
+	private T referent;         /* Treated specially by GC */
+    // 引用队列
+    volatile ReferenceQueue<? super T> queue;
+    Reference(T referent, ReferenceQueue<? super T> queue) {
+        this.referent = referent;
+        this.queue = (queue == null) ? ReferenceQueue.NULL : queue;
     }
 }
 ```
 
+从Entry的构造方法我们知道，key和queue最终会传到到Reference的构造方法中，这里的key就是Reference的referent属性，它会被gc特殊对待，即当没有强引用存在时，当下一次gc的时候会被清除。
+
+## 构造方法
+
+
+
+
+
+```java
+public WeakHashMap(int initialCapacity, float loadFactor) {
+    if (initialCapacity < 0)
+        throw new IllegalArgumentException("Illegal Initial Capacity: "+
+                                           initialCapacity);
+    if (initialCapacity > MAXIMUM_CAPACITY)
+        initialCapacity = MAXIMUM_CAPACITY;
+
+    if (loadFactor <= 0 || Float.isNaN(loadFactor))
+        throw new IllegalArgumentException("Illegal Load factor: "+
+                                           loadFactor);
+    int capacity = 1;
+    while (capacity < initialCapacity)
+        capacity <<= 1;
+    table = newTable(capacity);
+    this.loadFactor = loadFactor;
+    threshold = (int)(capacity * loadFactor);
+}
+
+public WeakHashMap(int initialCapacity) {
+    this(initialCapacity, DEFAULT_LOAD_FACTOR);
+}
+
+public WeakHashMap() {
+    this(DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR);
+}
+
+public WeakHashMap(Map<? extends K, ? extends V> m) {
+    this(Math.max((int) (m.size() / DEFAULT_LOAD_FACTOR) + 1,
+                  DEFAULT_INITIAL_CAPACITY),
+         DEFAULT_LOAD_FACTOR);
+    putAll(m);
+}
+```
+
+构造方法与HashMap基本类似，初始容量为大于等于传入容量最近的2的n次方，扩容门槛${threshold = capacity * loadFactor}$ 。
+
+
+
+## `put(K key, V value)` 方法
+
+
+
+添加元素的方法。
+
+```java
+public V put(K key, V value) {
+    // 如果key为空，用空对象代替
+    Object k = maskNull(key);
+    // 计算key的hash值
+    int h = hash(k);
+    // 获取桶
+    Entry<K,V>[] tab = getTable();
+    // 计算元素在哪个桶中，h & (length-1)
+    int i = indexFor(h, tab.length);
+	// 遍历桶对应的链表
+    for (Entry<K,V> e = tab[i]; e != null; e = e.next) {
+        if (h == e.hash && eq(k, e.get())) {
+            // 如果找到了元素就使用新值替换旧值，并返回旧值
+            V oldValue = e.value;
+            if (value != oldValue)
+                e.value = value;
+            return oldValue;
+        }
+    }
+
+    modCount++;
+    // 如果没找到就把新值插入到链表的头部
+    Entry<K,V> e = tab[i];
+    tab[i] = new Entry<>(k, value, queue, h, e);
+    // 如果插入元素后数量达到了扩容门槛就把桶的数量扩容为2倍大小
+    if (++size >= threshold)
+        resize(tab.length * 2);
+    return null;
+}
+```
+
+
+
+> 执行步骤：
+>
+> 1. 计算hash，这里与HashMap有所不同，HashMap中如果key为空直接返回0，这里是用空对象来计算的。
+> 2. 计算在哪一个桶中
+> 3. 遍历桶对应的链表
+> 4. 如果找到元素就用新值替换，返回旧值
+> 5. 如果没有找到就在链表头部插入新元素，HashMap是插入到链表尾部
+> 6. 如果元素达到了扩容门槛，就把容量扩大到2倍，HashMap中是大于threshold才扩容，这里等于threshold就开始扩容了。
+
+
+
+## `resize(int newCapacity)` 方法
+
+```java
+void resize(int newCapacity) {
+    // 获取旧桶，getTable()的时候会剔除失效的Entry
+    Entry<K,V>[] oldTable = getTable();
+    // 旧容量
+    int oldCapacity = oldTable.length;
+    if (oldCapacity == MAXIMUM_CAPACITY) {
+        threshold = Integer.MAX_VALUE;
+        return;
+    }
+	// 新桶
+    Entry<K,V>[] newTable = newTable(newCapacity);
+    // 把元素从旧桶转移到新桶
+    transfer(oldTable, newTable);
+    // 把心痛赋值桶变量
+    table = newTable;
+
+	// 如果元素个数大于扩容门槛的一半，则使用新桶和新容量，并计算新的扩容门槛
+    if (size >= threshold / 2) {
+        threshold = (int)(newCapacity * loadFactor);
+    } else {
+        // 否则把元素再转移回旧桶，还是使用旧桶
+        // 因为在transfer的时候会清除失效的Entry，所以元素个数可能没有那么大了，就不需要扩容了
+        expungeStaleEntries();
+        transfer(newTable, oldTable);
+        table = oldTable;
+    }
+}
+
+private void transfer(Entry<K,V>[] src, Entry<K,V>[] dest) {
+    // 遍历旧桶
+    for (int j = 0; j < src.length; ++j) {
+        Entry<K,V> e = src[j];
+        src[j] = null;
+        while (e != null) {
+            Entry<K,V> next = e.next;
+            Object key = e.get();
+            // 如果key等于了null就清除，说明key被gc清理掉了，则把整个Entry清除
+            if (key == null) {
+                e.next = null;  // Help GC
+                e.value = null; //  "   "
+                size--;
+            } else {
+                // 否则就计算在新桶中的位置并把这个元素放在新桶对应链表的头部
+                int i = indexFor(e.hash, dest.length);
+                e.next = dest[i];
+                dest[i] = e;
+            }
+            e = next;
+        }
+    }
+}
+```
+
+>执行逻辑：
+>
+>1. 判断旧容量是否达到最大容量
+>2. 新建新桶并把元素全部转移到新桶中
+>3. 如果转移后元素个数不到扩容门槛的一半，则把元素再转移回旧桶，继续使用旧桶，说明不需要扩容
+>4. 否则使用新桶，不计算新的容量门槛
+>5. 转移元素的过程中会把key为null的元素清除掉，所以size会变小
+
+
+
+## `get(Object key)` 方法
+
+获取元素。
+
+```java
+public V get(Object key) {
+    Object k = maskNull(key);
+    // 计算hash
+    int h = hash(k);
+    Entry<K,V>[] tab = getTable();
+    int index = indexFor(h, tab.length);
+    Entry<K,V> e = tab[index];
+    // 遍历链表，找到了就返回
+    while (e != null) {
+        if (e.hash == h && eq(k, e.get()))
+            return e.value;
+        e = e.next;
+    }
+    return null;
+}
+```
+
+> 执行逻辑：
+>
+> 1. 计算hash值；
+> 2. 遍历所在桶对应的链表
+> 3. 如果找到了就 返回元素的value值
+> 4. 没找到返回null
+
+
+
+## `remove(Object key)` 方法
+
+移除元素
+
+```java
+public V remove(Object key) {
+    Object k = maskNull(key);
+    // 计算hash
+    int h = hash(k);
+    Entry<K,V>[] tab = getTable();
+    int i = indexFor(h, tab.length);
+    // 元素所在的桶的第一个元素
+    Entry<K,V> prev = tab[i];
+    Entry<K,V> e = prev;
+	// 遍历链表
+    while (e != null) {
+        Entry<K,V> next = e.next;
+        if (h == e.hash && eq(k, e.get())) {
+            // 如果找到了就删除元素
+            modCount++;
+            size--;
+            if (prev == e)
+                // 如果是头节点，就把头节点指向下一个节点
+                tab[i] = next;
+            else
+                // 如果不是头节点，删除该节点
+                prev.next = next;
+            return e.value;
+        }
+        prev = e;
+        e = next;
+    }
+
+    return null;
+}
+```
+
+> 执行逻辑：
+>
+> 1. 计算hash
+> 2. 找到所在的桶
+> 3. 遍历对应桶的链表
+> 4. 如果找到了就删除该节点，并返回该节点的value值
+> 5. 如果没有找到就返回null
+
+
+
+## `expungeStaleEntries()` 方法
+
+剔除失效的Entry
+
+```java
+private void expungeStaleEntries() {
+    // 遍历引用队列
+    for (Object x; (x = queue.poll()) != null; ) {
+        synchronized (queue) {
+            @SuppressWarnings("unchecked")
+            Entry<K,V> e = (Entry<K,V>) x;
+            // 找到所在的桶
+            int i = indexFor(e.hash, table.length);
+
+            Entry<K,V> prev = table[i];
+            Entry<K,V> p = prev;
+            // 遍历链表
+            while (p != null) {
+                Entry<K,V> next = p.next;
+                // 找到该元素
+                if (p == e) {
+                    // 删除该元素
+                    if (prev == e)
+                        table[i] = next;
+                    else
+                        prev.next = next;
+                    // Must not null out e.next;
+                    // stale entries may be in use by a HashIterator
+                    e.value = null; // Help GC
+                    size--;
+                    break;
+                }
+                prev = p;
+                p = next;
+            }
+        }
+    }
+}
+```
+
+> 执行逻辑：
+>
+> 1. 当key失效的时候，gc会自动把对应的Entry添加到这个引用队列中
+> 2. 所以对map的操作都会直接或间接地调用到这个方法先移除失效的Entry，比如getTable()、size()、resize()
+> 3. 遍历引用队列，并把其中保存的Entry从map中移除掉，移除Entry的同时把value也一并置为null帮助gc清理元素
+
+
+
+# 使用案例
+
+
+
+```java
+public static void main(String[] args) {
+    WeakHashMap<String, Integer> map = new WeakHashMap<>();
+    for (int i = 0; i < 5; i++) {
+        // 弱引用
+        map.put(String.valueOf(i), i);
+    }
+    // 把key=3重置为强引用
+    String key = null;
+    for (String s : map.keySet()) {
+        if (s.equals("3")) {
+            key = s;
+        }
+    }
+    // 强引用
+    map.put("666", 666);
+
+    System.out.println(map);
+    //输出{666=666, 4=4, 0=0, 1=1, 2=2, 3=3}
+    // 执行gc
+    System.gc();
+
+    System.out.println(map);
+    // 输出{666=666, 3=3}
+
+    // key与"3"的引用断裂
+    key = null;
+    // 执行gc
+    System.gc();
+
+    System.out.println(map);
+    // 输出{666=666}
+}
+```
+
+
+
+在这里通过new String()声明的变量才是弱引用，使用"666"这种声明方式会一直存在于常量池中，不会被清理，所以"666"这个元素会一直在map里面，其它的元素随着gc都会被清理掉。
+
+# 总结
+
+1. WeakHashMap使用（数组 + 链表）存储结构；
+2. WeakHashMap中的key是弱引用，gc的时候会被清除；
+3. 每次对map的操作都会剔除失效key对应的Entry；
+4. 使用String作为key时，一定要使用new String()这样的方式声明key，才会失效，其它的基本类型的包装类型是一样的；
+5. WeakHashMap常用来作为缓存使用；
+
+# 彩蛋
+
+强、软、弱、虚引用知多少？
+
+1. 强引用
+
+使用最普遍的引用。如果一个对象具有强引用，它绝对不会被gc回收。如果内存空间不足了，gc宁愿抛出OutOfMemoryError，也不是会回收具有强引用的对象。
+
+2. 软引用
+
+如果一个对象只具有软引用，则内存空间足够时不会回收它，但内存空间不够时就会回收这部分对象。只要这个具有软引用对象没有被回收，程序就可以正常使用。
+
+3. 弱引用
+
+如果一个对象只具有弱引用，则不管内存空间够不够，当gc扫描到它时就会回收它。
+
+4. 虚引用
+
+如果一个对象只具有虚引用，那么它就和没有任何引用一样，任何时候都可能被gc回收。
+
+
+
+软（弱、虚）引用必须和一个引用队列（ReferenceQueue）一起使用，当gc回收这个软（弱、虚）引用引用的对象时，会把这个软（弱、虚）引用放到这个引用队列中。
+
+比如，上述的Entry是一个弱引用，它引用的对象是key，当key被回收时，Entry会被放到queue中。
