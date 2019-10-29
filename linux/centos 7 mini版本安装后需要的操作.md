@@ -90,6 +90,15 @@ yum -y install bind-utils
 yum -y install lrzsz 
 ```
 
+## 同步时间
+
+```shell
+cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+date # 查看时间
+#不行执行下面命令
+yum install ntpdate -y ; ntpdate time.windows.com 
+```
+
 
 
 ## 安装docker
