@@ -55,13 +55,14 @@ docker inspect XXX # 查看容器内部细节
 
 
 
-## Dockerfile 
+## Dockerfile
 
-
-
-
-
-
+```dockerfile
+FROM ...
+MAINTAINER "shenguangyang"<shenguangyang@jdimage.cn>
+ENV TZ Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+```
 
 
 
