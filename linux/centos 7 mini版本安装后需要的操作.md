@@ -88,6 +88,8 @@ yum -y install man-pages
 yum -y install bind-utils
 # 上传下载
 yum -y install lrzsz 
+# lsof命令
+yum -y install lsof
 ```
 
 ## 同步时间

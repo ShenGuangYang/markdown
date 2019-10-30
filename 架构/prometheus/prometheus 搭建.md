@@ -58,3 +58,27 @@ MAINTAINER "shenguangyang"<shenguangyang@jdimage.cn>
 
 
 
+
+
+
+## 无数据展示问题
+
+node-exporter、prometheus、grafana都有正常运行的情况下，没有数据展示。
+
+就要查看宿主机与docker容器时间是不是一致
+
+```shell
+# 时间同步
+cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+date # 查看时间
+#不行执行下面命令
+yum install ntpdate -y; 
+ntpdate time.windows.com 
+```
+
+
+
+
+
+
+
