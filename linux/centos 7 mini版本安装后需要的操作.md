@@ -96,7 +96,8 @@ yum -y install lrzsz
 cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 date # 查看时间
 #不行执行下面命令
-yum install ntpdate -y ; ntpdate time.windows.com 
+yum install ntpdate -y;
+ntpdate time.windows.com 
 ```
 
 
