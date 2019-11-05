@@ -11,13 +11,10 @@
 2. 在 `node-exporter` 目录下，创建 `Dockerfile` 
 
    ```dockerfile
-   FROM docker.io/prom/node-exporter
+   FROM quay.io/prometheus/node-exporter
    MAINTAINER "shenguangyang"<shenguangyang@jdimage.cn>
-   #同步时间
-   #ENV TZ Asia/Shanghai
-   #RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
    ```
-
+   
 3. 在node-exporter目录下，创建 `start.sh` 文件 
 
    ```shell
@@ -27,11 +24,13 @@
    docker build -t node-exporter .
    
    docker run --privileged=true -dt -p 9100:9100 \
-     -v /proc:/host/proc:ro \
-     -v /sys:/host/sys:ro \
-     -v /:/rootfs:ro \
-     --net=host \
-     --name node-exporter node-exporter \	
+     --net="host" \
+     --pid="host" \
+     -v "/:/host:ro,rslave" \
+     -v /etc/timezone:/etc/timezone  \ 
+     -v /etc/localtime:/etc/localtime \ 
+     --name node-exporter node-exporter \
+     --path.rootfs /host
    ```
 
    
@@ -53,11 +52,8 @@
    ```dockerfile
    FROM docker.io/prom/prometheus
    MAINTAINER "shenguangyang"<shenguangyang@jdimage.cn>
-   #同步时间
-   #ENV TZ Asia/Shanghai
-   #RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
    ```
-
+   
 3. 创建 `prometheus.yml` 
 
    ```yml
@@ -88,6 +84,8 @@
    docker rmi prometheus
    docker build -t prometheus .
    docker run --privileged=true  -d  -p 9090:9090 \
+    -v /etc/timezone:/etc/timezone  \ 
+    -v /etc/localtime:/etc/localtime \ 
     -v "$(pwd)"/prometheus.yml:/etc/prometheus/prometheus.yml \
     -v "$(pwd)"/rule.yml:/etc/prometheus/rule.yml \
     --name prometheus prometheus --config.file=/etc/prometheus/prometheus.yml \
@@ -115,11 +113,8 @@
    ```dockerfile
    FROM docker.io/grafana/grafana
    MAINTAINER "shenguangyang"<shenguangyang@jdimage.cn>
-   #同步时间
-   #ENV TZ Asia/Shanghai
-   #RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
    ```
-
+   
 3. 在 `grafana` 文件夹，创建 grafana-storage 文件夹，设置 777 权限
 
    ```shell
@@ -136,6 +131,8 @@
    docker build -t grafana .
    
    docker run --privileged=true  -dt -p 3000:3000 \
+    -v /etc/timezone:/etc/timezone  \ 
+    -v /etc/localtime:/etc/localtime \ 
     -v "$(pwd)"/grafana-storage:/var/lib/grafana \
     --name grafana grafana
    ```
@@ -179,11 +176,8 @@
    ```dockerfile
    FROM docker.io/prom/prometheus
    MAINTAINER "shenguangyang"<shenguangyang@jdimage.cn>
-   #同步时间
-   #ENV TZ Asia/Shanghai
-   #RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
    ```
-
+   
 3. 在 `alertmanager ` 文件夹下创建 `alertmanager.yml` 
 
    ```yml
@@ -237,6 +231,8 @@
    docker rmi alertmanager
    docker build -t alertmanager .
    docker run --privileged=true -dt -p 9093:9093 \
+    -v /etc/timezone:/etc/timezone  \ 
+    -v /etc/localtime:/etc/localtime \ 
     -v "$(pwd)"/alertmanager.yml:/etc/alertmanager/alertmanager.yml \
     -v "$(pwd)"/template:/etc/alertmanager/template \
     --name alertmanager alertmanager  \
