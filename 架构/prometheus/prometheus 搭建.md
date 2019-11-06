@@ -27,8 +27,8 @@
      --net="host" \
      --pid="host" \
      -v "/:/host:ro,rslave" \
-     -v /etc/timezone:/etc/timezone  \ 
-     -v /etc/localtime:/etc/localtime \ 
+     -v /etc/timezone:/etc/timezone  \
+     -v /etc/localtime:/etc/localtime \
      --name node-exporter node-exporter \
      --path.rootfs /host
    ```
@@ -84,8 +84,8 @@
    docker rmi prometheus
    docker build -t prometheus .
    docker run --privileged=true  -d  -p 9090:9090 \
-    -v /etc/timezone:/etc/timezone  \ 
-    -v /etc/localtime:/etc/localtime \ 
+    -v /etc/timezone:/etc/timezone  \
+    -v /etc/localtime:/etc/localtime \
     -v "$(pwd)"/prometheus.yml:/etc/prometheus/prometheus.yml \
     -v "$(pwd)"/rule.yml:/etc/prometheus/rule.yml \
     --name prometheus prometheus --config.file=/etc/prometheus/prometheus.yml \
@@ -131,8 +131,8 @@
    docker build -t grafana .
    
    docker run --privileged=true  -dt -p 3000:3000 \
-    -v /etc/timezone:/etc/timezone  \ 
-    -v /etc/localtime:/etc/localtime \ 
+    -v /etc/timezone:/etc/timezone  \
+    -v /etc/localtime:/etc/localtime \
     -v "$(pwd)"/grafana-storage:/var/lib/grafana \
     --name grafana grafana
    ```
@@ -231,8 +231,8 @@
    docker rmi alertmanager
    docker build -t alertmanager .
    docker run --privileged=true -dt -p 9093:9093 \
-    -v /etc/timezone:/etc/timezone  \ 
-    -v /etc/localtime:/etc/localtime \ 
+    -v /etc/timezone:/etc/timezone  \
+    -v /etc/localtime:/etc/localtime \
     -v "$(pwd)"/alertmanager.yml:/etc/alertmanager/alertmanager.yml \
     -v "$(pwd)"/template:/etc/alertmanager/template \
     --name alertmanager alertmanager  \
@@ -254,25 +254,23 @@
    
    # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
    rule_files:
-     # - "first_rules.yml"
-     # - "second_rules.yml"
      - "/etc/prometheus/rule.yml"
    ```
-
+   
 10. 在 `prometheus` 文件夹下创建 `rule.yml`
 
     ```yml
     groups:
     - name: rules.yml
       rules:
-      - alert: InstanceStatus # alert 名字
-        expr: up{job="jd-manager-actuator"} == 0 # 判断条件
-        for: 5s # 条件保持 10s 才会发出 alter
-        labels: # 设置 alert 的标签
-          severity: "critical"
-        annotations:  # alert 的其他标签，但不用于标识 alert
-          description: "服务器  已当机超过 20s"
-          summary: "服务器  运行状态"
+          - alert: InstanceStatus # alert 名字
+            expr: up{job="jd-manager-actuator"} == 0 # 判断条件
+            for: 5s # 条件保持 10s 才会发出 alter
+            labels: # 设置 alert 的标签
+              severity: "critical"
+            annotations:  # alert 的其他标签，但不用于标识 alert
+              description: "jd-manager-actuator 服务器 已当机超过 20s"
+              summary: "jd-manager-actuator 服务器 运行状态"
     ```
 
 11. 重新启动  **prometheus server** 
