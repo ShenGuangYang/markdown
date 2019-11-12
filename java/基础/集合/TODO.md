@@ -153,8 +153,8 @@ Set对应于数学概念上的集合，里面的元素是不可重复的，通�
 - [x] [HashSet](java集合之HashSet.md)
 - [x] [LinkedHashSet](java集合之LinkedHashSet.md)
 - [x] [TreeSet](java集合之TreeSet.md)
-- [ ] [CopyOnWriteArraySet](java集合之CopyOnWriteArraySet.md)
-- [ ] [ConcurrentSkipListSet](java集合之ConcurrentSkipListSet.md)
+- [x] [CopyOnWriteArraySet](java集合之CopyOnWriteArraySet.md)
+- [x] [ConcurrentSkipListSet](java集合之ConcurrentSkipListSet.md)
 
 关于Set的问题主要有：
 
