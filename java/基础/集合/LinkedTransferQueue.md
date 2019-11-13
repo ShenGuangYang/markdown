@@ -182,7 +182,7 @@ public boolean tryTransfer(E e) {
 }
 
 public void transfer(E e) throws InterruptedException {
-    // 同步模式
+    // 异步模式
     if (xfer(e, true, SYNC, 0) != null) {
         Thread.interrupted(); // failure possible only due to interrupt
         throw new InterruptedException();
