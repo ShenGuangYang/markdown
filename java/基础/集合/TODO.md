@@ -203,7 +203,7 @@ Set对应于数学概念上的集合，里面的元素是不可重复的，通�
 - [x] [PriorityBlockingQueue](PriorityBlockingQueue.md) 
 - [x] [LinkedTransferQueue](LinkedTransferQueue.md) 
 - [x] [ConcurrentLinkedQueue](ConcurrentLinkedQueue.md) 
-- [ ] DelayQueue
+- [x] [DelayQueue](DelayQueue.md) 
 
 
 
@@ -283,7 +283,7 @@ Set对应于数学概念上的集合，里面的元素是不可重复的，通�
 
 
 
-- [ ] ArrayDeque
+- [x] [ArrayDeque](ArrayDeque.md) 
 
 
 
