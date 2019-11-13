@@ -199,7 +199,7 @@ Set对应于数学概念上的集合，里面的元素是不可重复的，通�
 - [x] [PriorityQueue](PriorityQueue.md)
 - [x] [ArrayBlockingQueue](ArrayBlockingQueue.md) 
 - [x] [LinkedBlockingQueue](LinkedBlockingQueue.md) 
-- [ ] SynchronousQueue
+- [ ] [SynchronousQueue](SynchronousQueue.md) 
 - [ ] PriorityBlockingQueue
 - [ ] LinkedTransferQueue
 - [ ] ConcurrentLinkedQueue
