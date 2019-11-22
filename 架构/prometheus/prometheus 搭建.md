@@ -283,6 +283,40 @@
 
 
 
+## 搭建 push-gateway 组件 
+
+`push-gateway` 组件是通过http接口接受其他业务统计信息，暂存到本地，prometheus 在定时获取数据。
+
+1. 创建 `push-gateway` 目录
+
+2. 在 `push-gateway` 目录下，创建 `Dockerfile` 
+
+   ```dockerfile
+   FROM docker.io/prom/pushgateway
+MAINTAINER "shenguangyang"<shenguangyang@jdimage.cn>
+```
+
+3. 在 `push-gateway` 目录下，创建 `start.sh` 文件 
+
+   ```shell
+   docker stop push-gateway
+   docker rm push-gateway
+   docker rmi push-gateway
+   docker build -t push-gateway .
+   docker run --privileged=true -dt -p 9091:9091 \
+     --name push-gateway  push-gateway \
+   ```
+   
+4. root账号运行， `sh start.sh` 
+
+5. 通过 **bash **上发数据命令 `echo "some_metric 3.14" | curl --data-binary @- http://192.168.2.100:9091/metrics/job/some_job` 
+
+6. 浏览器打开 [http://192.168.2.100:9091](http://192.168.2.100:9100) ，显示如下说明搭建成功。
+
+   ![push-gateway](../../img/prometheus/push-gateway.png)
+
+
+
 ## grafana无数据展示问题
 
 node-exporter、prometheus、grafana都有正常运行的情况下，没有数据展示。
