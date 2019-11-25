@@ -1,4 +1,4 @@
-# 基于docker 搭建 promtheus、node-exporter、alertmanager
+# 基于docker 搭建 promtheus 监控相关服务
 
 
 
@@ -293,7 +293,8 @@
 
    ```dockerfile
    FROM docker.io/prom/pushgateway
-MAINTAINER "shenguangyang"<shenguangyang@jdimage.cn>
+   MAINTAINER "shenguangyang"<shenguangyang@jdimage.cn>
+   ```
 ```
 
 3. 在 `push-gateway` 目录下，创建 `start.sh` 文件 
@@ -305,8 +306,8 @@ MAINTAINER "shenguangyang"<shenguangyang@jdimage.cn>
    docker build -t push-gateway .
    docker run --privileged=true -dt -p 9091:9091 \
      --name push-gateway  push-gateway \
-   ```
-   
+```
+
 4. root账号运行， `sh start.sh` 
 
 5. 通过 **bash **上发数据命令 `echo "some_metric 3.14" | curl --data-binary @- http://192.168.2.100:9091/metrics/job/some_job` 
@@ -314,6 +315,160 @@ MAINTAINER "shenguangyang"<shenguangyang@jdimage.cn>
 6. 浏览器打开 [http://192.168.2.100:9091](http://192.168.2.100:9100) ，显示如下说明搭建成功。
 
    ![push-gateway](../../img/prometheus/push-gateway.png)
+
+
+
+## 搭建 loki 日志组件
+
+`loki` 是 `grafana` 推出的日志聚合系统。包含组件：
+
+- `loki` 是主服务器，负责存储日志和处理查询。
+- `promtail` 是代理服务，负责收集日志并将其发送给Loki。
+
+
+
+### 搭建 loki 服务
+
+1. 创建 `loki` 目录
+
+2. 在 `loki` 目录下，创建 `Dockerfile` 
+
+   ```dockerfile
+   FROM docker.io/grafana/loki
+   MAINTAINER "shenguangyang"<shenguangyang@jdimage.cn>
+   ```
+
+3. 在 `loki` 目录下，创建 `loki-local-config.yaml` 
+
+   ```yaml
+   auth_enabled: false
+   
+   server:
+     http_listen_port: 3100
+   
+   ingester:
+     lifecycler:
+       address: 127.0.0.1
+       ring:
+         kvstore:
+           store: inmemory
+         replication_factor: 1
+       final_sleep: 0s
+     chunk_idle_period: 5m
+     chunk_retain_period: 30s
+     max_transfer_retries: 1
+   
+   schema_config:
+     configs:
+     - from: 2019-10-10
+       store: boltdb
+       object_store: filesystem
+       schema: v9
+       index:
+         prefix: index_
+         period: 168h
+   
+   storage_config:
+     boltdb:
+       directory: /tmp/loki/index
+   
+     filesystem:
+       directory: /tmp/loki/chunks
+       
+   limits_config:
+     enforce_metric_name: false
+     reject_old_samples: true
+     reject_old_samples_max_age: 168h
+   
+   chunk_store_config:
+     max_look_back_period: 0
+   
+   table_manager:
+     chunk_tables_provisioning:
+       inactive_read_throughput: 0
+       inactive_write_throughput: 0
+       provisioned_read_throughput: 0
+       provisioned_write_throughput: 0
+     index_tables_provisioning:
+       inactive_read_throughput: 0
+       inactive_write_throughput: 0
+       provisioned_read_throughput: 0
+       provisioned_write_throughput: 0
+     retention_deletes_enabled: false
+     retention_period: 0
+   
+   ```
+
+   
+
+4. 在 `loki` 目录下，创建 `start.sh` 文件 
+
+   ```shell
+    docker stop loki
+    docker rm loki
+    docker rmi loki
+    docker build -t loki .
+    docker run --privileged=true -dt -p 3100:3100 \
+     -v $(pwd)/loki-local-config.yaml:/etc/loki/local-config.yaml \
+     --name loki loki \
+     -config.file=/etc/loki/local-config.yaml
+   ```
+
+5. root账号运行， `sh start.sh` 
+
+
+
+### 搭建 promtail 组件
+
+1. 创建 `promtail` 目录
+
+2. 在 `promtail` 目录下，创建 `Dockerfile` 
+
+   ```dockerfile
+   FROM docker.io/grafana/promtail
+   MAINTAINER "shenguangyang"<shenguangyang@jdimage.cn>
+   ```
+
+3. 在 `promtail` 目录下，创建 `promtail-docker-config.yaml` 
+
+   ```yaml
+   server:
+     http_listen_port: 9080
+     grpc_listen_port: 0
+   
+   positions:
+     filename: /tmp/positions.yaml
+   
+   clients:
+     - url: http://192.168.2.100:3100/loki/api/v1/push
+   
+   scrape_configs:
+   - job_name: system
+     static_configs:
+     - targets:
+         - localhost
+       labels:
+         job: varlogs
+         __path__: /var/log/*
+   
+   ```
+
+4. 在 `promtail` 目录下，创建 `start.sh` 文件 
+
+   ```shell
+   docker stop promtail
+   docker rm promtail
+   docker rmi promtail
+   docker build -t promtail .
+   docker run --privileged=true -dt  \
+    -v $(pwd)/promtail-docker-config.yaml:/etc/promtail/promtail-docker-config.yaml \
+    -v /var/log:/var/log \
+    --name promtail promtail \
+    --config.file=/etc/promtail/promtail-docker-config.yaml \
+   
+   ```
+
+5. root账号运行， `sh start.sh` 
 
 
 
