@@ -31,6 +31,22 @@ chmod u-w /etc/sudoers
 
 5. 这样普通用户就可以使用sudo了
 
+
+
+## bash 命令行配置
+
+```bash
+# linux用户名颜色高亮
+cd 
+vim .bashrc
+## vim
+PS1='\[\e[33;40m\][\u@\h \W]#\[\e[m\] '
+##
+source .bashrc
+```
+
+
+
 ## 配置网络连接
 
 1. 使用nat模式，配置虚拟机的子掩码、网关等信息
