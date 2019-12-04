@@ -40,7 +40,8 @@ chmod u-w /etc/sudoers
 cd 
 vim .bashrc
 ## vim
-PS1='\[\e[33;40m\][\u@\h \W]#\[\e[m\] '
+PS1='\[\e[33;40m\][\u@\h \W]\\$\[\e[0m\] '
+
 ##
 source .bashrc
 ```
