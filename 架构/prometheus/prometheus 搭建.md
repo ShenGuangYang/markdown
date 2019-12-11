@@ -420,6 +420,8 @@
 
 ### 搭建 promtail 组件
 
+个人感觉，用于linux系统，监控某一个日志文件。通过配置scrape_configs 采集系统或自定义日志
+
 1. 创建 `promtail` 目录
 
 2. 在 `promtail` 目录下，创建 `Dockerfile` 
@@ -450,7 +452,23 @@
        labels:
          job: varlogs
          __path__: /var/log/*
-   
+   # 正则采集自定义日志
+   scrape_configs:
+   - job_name: tikv
+     pipeline_stages:
+     - regex:
+         expression: '\[(?P<time>\d{4}\/\d{2}\/\d{2}.\d{2}:\d{2}:\d{2}.\d{3}.\+\d{2}:\d{2})\].\[(?P<level>\w*)\].\[(?P<source>\w.*):(?P<line>\d*)\].(?P<message>.*$)'
+     - labels:
+         level:
+     - timestamp:
+         format: 2006/01/02 15:04:05.000 -07:00
+         source: time
+     static_configs:
+     - targets:
+         - localhost
+       labels:
+         job: tikv
+         __path__: /var/tikv*.log
    ```
 
 4. 在 `promtail` 目录下，创建 `start.sh` 文件 
