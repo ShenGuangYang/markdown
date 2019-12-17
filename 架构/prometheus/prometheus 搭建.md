@@ -331,14 +331,16 @@
 
 1. 创建 `loki` 目录
 
-2. 在 `loki` 目录下，创建 `Dockerfile` 
+2. 在 `loki` 目录下, 设置 777 权限
+
+3. 在 `loki` 目录下，创建 `Dockerfile` 
 
    ```dockerfile
    FROM docker.io/grafana/loki
    MAINTAINER "shenguangyang"<shenguangyang@jdimage.cn>
    ```
 
-3. 在 `loki` 目录下，创建 `loki-local-config.yaml` 
+4. 在 `loki` 目录下，创建 `loki-local-config.yaml` 
 
    ```yaml
    auth_enabled: false
@@ -399,22 +401,37 @@
    
    ```
 
-   
-
-4. 在 `loki` 目录下，创建 `start.sh` 文件 
+5. 在 `loki` 目录下，创建 `start.sh` 文件 
 
    ```shell
-    docker stop loki
-    docker rm loki
-    docker rmi loki
-    docker build -t loki .
-    docker run --privileged=true -dt -p 3100:3100 \
-     -v $(pwd)/loki-local-config.yaml:/etc/loki/local-config.yaml \
-     --name loki loki \
-     -config.file=/etc/loki/local-config.yaml
+   docker stop loki
+   docker rm loki
+   docker rmi loki
+   docker build -t loki .
+   docker run --privileged=true -dt -p 3100:3100 \
+    -v $(pwd)/loki-local-config.yaml:/etc/loki/local-config.yaml \
+    -v $(pwd)/loki-storage:/tmp/loki \
+    --name loki loki \
+    -config.file=/etc/loki/local-config.yaml
    ```
 
-5. root账号运行， `sh start.sh` 
+6. root账号运行， `sh start.sh` 
+
+7. 新增 `push.sh` 脚本，增加执行权限`chmod +x push.sh`，脚本代码如下（网址信息对应修改）
+
+   ```shell
+   #!/bin/bash
+   NOW=$(date -u +%FT%TZ)
+   LINE=$1
+   DATA="{\"streams\": [{ \"labels\": \"{job=\\\"app\\\"}\", \"entries\": [{ \"ts\": \"${NOW}\", \"line\": \"info hahahahha line line\" }] }]}"
+   echo 'Seding ' ${DATA}
+   curl \
+   -H "Content-Type: application/json" \
+   -XPOST "http://192.168.2.100:3100/api/prom/push" \
+   --data "$DATA"
+   ```
+
+8. 执行脚本
 
 
 
