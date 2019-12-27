@@ -362,7 +362,7 @@
    
    schema_config:
      configs:
-     - from: 2019-10-10
+     - from: 2019-12-27
        store: boltdb
        object_store: filesystem
        schema: v9
