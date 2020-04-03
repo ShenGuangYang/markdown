@@ -63,3 +63,31 @@
 
 
 ![1585815325637](../../img/mybatis/4.png)
+
+
+
+
+
+## mybatis 核心对象
+
+
+
+
+
+| 对象          | 相关对象                                                     | 作用                                                         |
+| :------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Configuration | MapperRegistry<br />TypeAliasRegistry<br />TypeHandlerRegistry | 包含mybatis所有的配置信息                                    |
+| SqlSession    | SqlSessionFactory<br />DefaultSqlSession                     | 对操作数据库的增删改查api进行了封装，提供给应用层使用        |
+| Executor      | BaseExecutor<br />SimpleExecutor<br />BatchExecutor<br />ReuseExecutor | MyBatis 执行器，是mybatis调度的核心，负责sql语句的生成和查询缓存的维护 |
+|               |                                                              |                                                              |
+|               |                                                              |                                                              |
+|               |                                                              |                                                              |
+|               |                                                              |                                                              |
+|               |                                                              |                                                              |
+
+
+
+
+
+
+
