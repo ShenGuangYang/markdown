@@ -127,7 +127,7 @@ ntpdate time.windows.com
 
 ```shell
 # 查看内核，建议3.10以上
-uanme -a
+uname -a
 # 更新最新yum
 yum update
 # 安装需要的软件包
