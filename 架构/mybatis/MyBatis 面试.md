@@ -1,4 +1,4 @@
-# 面试
+# mybatis
 
 ## 缓存
 
@@ -61,3 +61,152 @@
 
 1. 因为所有的增删改都会刷新二级缓存，导致二级缓存失效，所以适合在查询为主的应用中使用，比如历史交易、历史订单的查询。否则缓存就失去了意义。
 2. 如果多个`namespace `中有针对于同一个表的操作，比如`Blog `表，如果在一个`namespace `中刷新了缓存，另一个`namespace `中没有刷新，就会出现读到脏数据的情况。所以，推荐在一个`Mapper `里面只操作单表的情况使用。
+
+
+
+## resultType 和 resultMap区别
+
+
+
+resultType  适用简单对象，只能自动映射，适合单表简单查询。
+
+resultMap 适合复杂对象，可知道映射关系，适合关联复合查询。
+
+
+
+## #{}，${} 的区别
+
+`# `会解析为PreparedStatement的参数标记符，参数用？代替，这样会经过类型检查和安全检查
+
+`$`只会做字符串替换，不能防止sql注入
+
+## collection 和 association的区别
+
+collection 一对一
+
+association 一对多，多对多
+
+
+
+## PrepareStatement 和 Statement 的区别
+
+两个都是接口，PrepareStatement 继承 Statement 的；
+
+Statement 处理静态sql，PrepareStatement 执行带有参数的语句。
+
+PrepareStatement 的addBatch() 方法一次性发送多个查询给数据库。
+
+PrepareStatement 可以防止sql注入
+
+mybatis 默认值是：PrepareStatement 
+
+
+
+## mybatis 中使用的设计模式
+
+工厂模式：SqlSessionFactory,MapperProxyFactory, ObjectFactory
+
+建造者：XMLConfigBuilder、XMLMapperBuilder、XMLStatementBuilder
+
+单例：SqlSessionFactory，Configuration
+
+责任链：InterceptChain
+
+动态代理：MapperProxy，Plugin
+
+装饰：Cache实现
+
+模板方法：BaseExecutor 与子类SimpleExecutor、BatchExecutot、ReuseExecutor
+
+
+
+
+
+## mybatis 解决了什么问题、为什么要用、核心特性
+
+
+
+1. 资源管理（数据源）
+2. 结果集自动映射
+3. 参数映射、动态sql
+4. sql语句跟代码分离
+5. 缓存、插件
+
+
+
+
+
+## mybatis中核心对象及其作用
+
+Configuration： 管理所有配置信息
+
+SqlSessionFactory：创建回话
+
+SqlSession：提供操作接口
+
+MapperProxy：代理mapper接口，用于找到对应的sql
+
+Executor：执行sql的具体操作者
+
+
+
+## java 类型和数据库类型怎么实现相互映射
+
+通过TypeHandler，例如java类型中的String 对应varchar，就会调用相应的handler。也可以自己实现
+
+
+
+## SimpleExecutor、ReuseExecutor、BatchExecutor的区别
+
+SimpleExecutor 使用后直接关闭Statement。
+
+ReuseExecutor 放在缓存中，可复用。
+
+BatchExecutor支持复用，可以批量执行
+
+
+
+## 关联查询的延迟加载是怎么实现的？
+
+动态代理，在创建实体类对象时进行代理，在调用代理对象的相关方法时触发二次查询。
+
+
+
+## Mapper没有实现类，mybatis的方法时怎么执行的？
+
+MapperProxy代理，代理中的invoke() 方法中调用了SqlSession中对象的方法
+
+
+
+## 插件实现的原理
+
+在被拦截对象的方法调用的时候，先走到 Plugin 的 invoke()方法，再走到
+Interceptor 实现类的 intercept()方法，最后通过 Invocation.proceed()方法调用被
+拦截对象的原方法
+
+
+
+## DefaultSqlSession 和 SqlSessionTemplate 的区别是什么
+
+
+
+SqlSessionTemplate 是线程安全的，内部通过ThreadLocal获取
+
+DefaultSqlSession 是非线程安全的
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
