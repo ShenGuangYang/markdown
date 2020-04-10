@@ -304,6 +304,8 @@ private static final boolean compareAndSetWaitStatus(Node node, int expect, int 
 如果 ThreadA 的锁还没有释放的情况下，ThreadB 和 ThreadC 来争抢锁肯定是会
 失败，那么失败以后会调用`shouldParkAfterFailedAcquire `方法，返回 false 时，也就是不需要挂起，返回 true，则需要调用 `parkAndCheckInterrupt`挂起当前线程。
 
+变量waitStatus则表示当前Node结点的等待状态。
+
 Node 有 5 中状态，分别是：CANCELLED(1)、SIGNAL(-1)、CONDITION(-2)、 PROPAGATE(-3)、默认状态(0)
 
 - `CANCELLED`: 在同步队列中等待的线程等待超时或被中断，需要从同步队列中取消该`Node`的结点, 其结点的`waitStatus`为`CANCELLED`，即结束状态，进入该状态后的结点将不会再变化
