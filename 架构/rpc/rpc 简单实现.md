@@ -30,7 +30,7 @@ RPC就是要实现像**本地过程调用**的方式一样去调用远程方法�
 
 
 
-
+**rpc-server-provider** 包下spring是集成到spring的实现
 
 
 
