@@ -29,7 +29,7 @@
 
 **一级缓存的局限性：**
 
-
+1. 一级缓存是SqlSession级别的，所以只是针对同一SqlSession生效，要是多个SqlSession，一级缓存不共享。
 
 
 
