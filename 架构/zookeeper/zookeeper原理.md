@@ -134,6 +134,10 @@ leader 选举存在两个阶段：
 
 ​		zookeeper 的watcher 机制，总的来说可以分为三个过程：客户端注册watcher、服务器处理watcher和客户端回调watcher。
 
+​		大致流程如下如所示：
+
+![zk](../../img/zookeeper/zk-3.png)
+
 
 
 ### watcher demo
@@ -376,17 +380,17 @@ public void submitRequest(Request si) {
 
 ##### firstProcessor的请求链组成
 
-
-
-firstProcessor的初始化是在`zookeeperServer.setupRequestProcessors()` 中完成的。
+​		firstProcessor的初始化是在`zookeeperServer.setupRequestProcessors()` 中完成的。
 
 ```java
 protected void setupRequestProcessors() {
     RequestProcessor finalProcessor = new FinalRequestProcessor(this);
     RequestProcessor syncProcessor = new SyncRequestProcessor(this, finalProcessor);
+    //调用 SyncRequestProcessor.run()
     ((SyncRequestProcessor)syncProcessor).start();
     firstProcessor = new PrepRequestProcessor(this, syncProcessor);
-    ((PrepRequestProcessor)firstProcessor).start();
+    // 调用 PrepRequestProcessor.run()
+    ((PrepRequestProcessor)firstProcessor).start(); 
 }
 ```
 
@@ -405,8 +409,92 @@ protected void setupRequestProcessors() {
 // 具体执行的逻辑如下
 public void processRequest(Request request) {
     // submittedRequests是LinkedBlockingQueue
-    
+    // 异步消费阻塞队列
     submittedRequests.add(request);
+}
+```
+
+
+
+##### PrepRequestProcessor.run()
+
+```java
+public void run() {
+    try {
+        // 死循环消费submittedRequests队列数据
+        while (true) {
+            Request request = submittedRequests.take();
+            long traceMask = ZooTrace.CLIENT_REQUEST_TRACE_MASK;
+            if (request.type == OpCode.ping) {
+                traceMask = ZooTrace.CLIENT_PING_TRACE_MASK;
+            }
+            if (LOG.isTraceEnabled()) {
+                ZooTrace.logRequest(LOG, traceMask, 'P', request, "");
+            }
+            if (Request.requestOfDeath == request) {
+                break;
+            }
+            // 调用 pRequest 进行预处理
+            pRequest(request);
+        }
+    } catch (RequestProcessorException e) {
+        if (e.getCause() instanceof XidRolloverException) {
+            LOG.info(e.getCause().getMessage());
+        }
+        handleException(this.getName(), e);
+    } catch (Exception e) {
+        handleException(this.getName(), e);
+    }
+    LOG.info("PrepRequestProcessor exited loop!");
+}
+```
+
+##### PrepRequestProcessor.pRequest()
+
+```java
+protected void pRequest(Request request) throws RequestProcessorException {
+    request.hdr = null;
+    request.txn = null;
+    try {
+        switch (request.type) {
+            // 根据op类型进行对应处理
+            // 代码太长不展示
+        }
+    } catch (KeeperException e) {
+        if (request.hdr != null) {
+            request.hdr.setType(OpCode.error);
+            request.txn = new ErrorTxn(e.code().intValue());
+        }
+        LOG.info("Got user-level KeeperException when processing "
+                 + request.toString()
+                 + " Error Path:" + e.getPath()
+                 + " Error:" + e.getMessage());
+        request.setException(e);
+    } catch (Exception e) {
+        // log at error level as we are returning a marshalling
+        // error to the user
+        LOG.error("Failed to process " + request, e);
+
+        StringBuilder sb = new StringBuilder();
+        ByteBuffer bb = request.request;
+        if(bb != null){
+            bb.rewind();
+            while (bb.hasRemaining()) {
+                sb.append(Integer.toHexString(bb.get() & 0xff));
+            }
+        } else {
+            sb.append("request buffer is null");
+        }
+
+        LOG.error("Dumping request buffer: 0x" + sb.toString());
+        if (request.hdr != null) {
+            request.hdr.setType(OpCode.error);
+            request.txn = new ErrorTxn(Code.MARSHALLINGERROR.intValue());
+        }
+    }
+    request.zxid = zks.getZxid();
+    // 调用下一责任链进行处理
+    nextProcessor.processRequest(request);
 }
 ```
 
@@ -414,7 +502,449 @@ public void processRequest(Request request) {
 
 
 
+##### SyncRequestProcessor. processRequest
+
+​		PrepRequestProcessor的下一责任链是SyncRequestProcessor
 
 
 
+```java
+//也是一样加入到阻塞队列中进行异步消费
+public void processRequest(Request request) {
+    // request.addRQRec(">sync");
+    queuedRequests.add(request);
+}
+```
+
+
+
+##### SyncRequestProcessor.run()
+
+
+
+```java
+public void run() {
+    try {
+        int logCount = 0;
+
+        setRandRoll(r.nextInt(snapCount/2));
+        while (true) {
+            Request si = null;
+            if (toFlush.isEmpty()) {
+                // 阻塞队列中获取请求
+                si = queuedRequests.take();
+            } else {
+                si = queuedRequests.poll();
+                if (si == null) {
+                    flush(toFlush);
+                    continue;
+                }
+            }
+            if (si == requestOfDeath) {
+                break;
+            }
+            if (si != null) {
+                //下面这块代码，粗略看来是触发快照操作，启动一个处理快照的线程
+                // track the number of records written to the log
+                if (zks.getZKDatabase().append(si)) {
+                    logCount++;
+                    if (logCount > (snapCount / 2 + randRoll)) {
+                        setRandRoll(r.nextInt(snapCount/2));
+                        // roll the log
+                        zks.getZKDatabase().rollLog();
+                        // take a snapshot
+                        if (snapInProcess != null && snapInProcess.isAlive()) {
+                            LOG.warn("Too busy to snap, skipping");
+                        } else {
+                            snapInProcess = new ZooKeeperThread("Snapshot Thread") {
+                                public void run() {
+                                    try {
+                                        zks.takeSnapshot();
+                                    } catch(Exception e) {
+                                        LOG.warn("Unexpected exception", e);
+                                    }
+                                }
+                            };
+                            snapInProcess.start();
+                        }
+                        logCount = 0;
+                    }
+                } else if (toFlush.isEmpty()) {
+                    
+                    if (nextProcessor != null) {
+                        // 继续调用后续责任链
+                        nextProcessor.processRequest(si);
+                        if (nextProcessor instanceof Flushable) {
+                            ((Flushable)nextProcessor).flush();
+                        }
+                    }
+                    continue;
+                }
+                toFlush.add(si);
+                if (toFlush.size() > 1000) {
+                    flush(toFlush);
+                }
+            }
+        }
+    } catch (Throwable t) {
+        handleException(this.getName(), t);
+        running = false;
+    }
+    LOG.info("SyncRequestProcessor exited!");
+}
+```
+
+
+
+##### FinalRequestProcessor. processRequest()
+
+```java
+// 代码太长
+// 展示核心代码
+
+case OpCode.exists: {
+    lastOp = "EXIS";
+    // TODO we need to figure out the security requirement for this!
+    ExistsRequest existsRequest = new ExistsRequest();
+    //反序列化 (将 ByteBuffer 反序列化成为 ExitsRequest.这个就是我们在客户端发起请求的时候传递过来的 Request 对象
+    ByteBufferInputStream.byteBuffer2Record(request.request,
+                                            existsRequest);
+     //得到请求的路径
+    String path = existsRequest.getPath();
+    if (path.indexOf('\0') != -1) {
+        throw new KeeperException.BadArgumentsException();
+    }
+    // 判断断请求的 getWatch 是否存在
+    Stat stat = zks.getZKDatabase().statNode(path, existsRequest
+                                             .getWatch() ? cnxn : null);
+     //在服务端内存数据库中根据路径得到结果进行组装，设置为 ExistsResponse
+    rsp = new ExistsResponse(stat);
+    break;
+}
+```
+
+
+
+### 客户端接受到服务端处理完成的响应
+
+
+
+​		在上面责任链最后的`FinalRequestProcessor.processRequest()` 的逻辑中，会调用这一段代码`cnxn.sendResponse(hdr, rsp, "response");，这段代码就是返回客户端的响应信息。
+
+​		而客户端在启动的时候会开启一个`SendThread`线程,里面的`run()`,会根据状态循环执行这一段代码`clientCnxnSocket.doTransport(to, pendingQueue, outgoingQueue, ClientCnxn.this);`,  `doTransport()` 的核心执行逻辑就是`doIO(pendingQueue, outgoingQueue, cnxn);`,
+
+
+
+#### ClientCnxnSocketNIO.doIO()
+
+```java
+void doIO(List<Packet> pendingQueue, LinkedList<Packet> outgoingQueue, ClientCnxn cnxn)
+    throws InterruptedException, IOException {
+    SocketChannel sock = (SocketChannel) sockKey.channel();
+    if (sock == null) {
+        throw new IOException("Socket is null!");
+    }
+    if (sockKey.isReadable()) {
+        int rc = sock.read(incomingBuffer);
+        if (rc < 0) {
+            throw new EndOfStreamException(
+                "Unable to read additional data from server sessionid 0x"
+                + Long.toHexString(sessionId)
+                + ", likely server has closed socket");
+        }
+        if (!incomingBuffer.hasRemaining()) {
+            incomingBuffer.flip();
+            if (incomingBuffer == lenBuffer) {
+                recvCount++;
+                readLength();
+            } else if (!initialized) {
+                readConnectResult();
+                enableRead();
+                if (findSendablePacket(outgoingQueue,
+                                       cnxn.sendThread.clientTunneledAuthenticationInProgress()) != null) {
+                    // Since SASL authentication has completed (if client is configured to do so),
+                    // outgoing packets waiting in the outgoingQueue can now be sent.
+                    enableWrite();
+                }
+                lenBuffer.clear();
+                incomingBuffer = lenBuffer;
+                updateLastHeard();
+                initialized = true;
+            } else {
+                //接收服务端的信息进行读取 
+                sendThread.readResponse(incomingBuffer);
+                lenBuffer.clear();
+                incomingBuffer = lenBuffer;
+                updateLastHeard();
+            }
+        }
+    }
+    if (sockKey.isWritable()) {
+        synchronized(outgoingQueue) {
+            Packet p = findSendablePacket(outgoingQueue,
+                                          cnxn.sendThread.clientTunneledAuthenticationInProgress());
+
+            if (p != null) {
+                updateLastSend();
+                // If we already started writing p, p.bb will already exist
+                if (p.bb == null) {
+                    if ((p.requestHeader != null) &&
+                        (p.requestHeader.getType() != OpCode.ping) &&
+                        (p.requestHeader.getType() != OpCode.auth)) {
+                        p.requestHeader.setXid(cnxn.getXid());
+                    }
+                    p.createBB();
+                }
+                sock.write(p.bb);
+                if (!p.bb.hasRemaining()) {
+                    sentCount++;
+                    outgoingQueue.removeFirstOccurrence(p);
+                    if (p.requestHeader != null
+                        && p.requestHeader.getType() != OpCode.ping
+                        && p.requestHeader.getType() != OpCode.auth) {
+                        synchronized (pendingQueue) {
+                            pendingQueue.add(p);
+                        }
+                    }
+                }
+            }
+            if (outgoingQueue.isEmpty()) {
+                // No more packets to send: turn off write interest flag.
+                // Will be turned on later by a later call to enableWrite(),
+                // from within ZooKeeperSaslClient (if client is configured
+                // to attempt SASL authentication), or in either doIO() or
+                // in doTransport() if not.
+                disableWrite();
+            } else if (!initialized && p != null && !p.bb.hasRemaining()) {
+                // On initial connection, write the complete connect request
+                // packet, but then disable further writes until after
+                // receiving a successful connection response.  If the
+                // session is expired, then the server sends the expiration
+                // response and immediately closes its end of the socket.  If
+                // the client is simultaneously writing on its end, then the
+                // TCP stack may choose to abort with RST, in which case the
+                // client would never receive the session expired event.  See
+                // http://docs.oracle.com/javase/6/docs/technotes/guides/net/articles/connection_release.html
+                disableWrite();
+            } else {
+                // Just in case
+                enableWrite();
+            }
+        }
+    }
+}
+```
+
+
+
+#### SendThread.readResponse()
+
+这个方法里面主要的流程如下 
+
+首先读取 header，
+
+如果 xid == -2,表明是一个 ping 的 response，return 
+
+如果 xid == -4 ,表明是一个 AuthPacket 的 response return 
+
+如果 xid == -1，表明是一个 notification,此时要继续读取并构造一个 enent，通过 EventThread.queueEvent 发送，return 
+
+其它情况下：从 pendingQueue 拿出一个 Packet，校验后更新 packet 信息
+
+
+
+```java
+ void readResponse(ByteBuffer incomingBuffer) throws IOException {
+     ByteBufferInputStream bbis = new ByteBufferInputStream(
+         incomingBuffer);
+     BinaryInputArchive bbia = BinaryInputArchive.getArchive(bbis);
+     ReplyHeader replyHdr = new ReplyHeader();
+	 // 反序列化header
+     replyHdr.deserialize(bbia, "header");
+     if (replyHdr.getXid() == -2) {
+         // -2 is the xid for pings
+         if (LOG.isDebugEnabled()) {
+             LOG.debug("Got ping response for sessionid: 0x"
+                       + Long.toHexString(sessionId)
+                       + " after "
+                       + ((System.nanoTime() - lastPingSentNs) / 1000000)
+                       + "ms");
+         }
+         return;
+     }
+     if (replyHdr.getXid() == -4) {
+         // -4 is the xid for AuthPacket               
+         if(replyHdr.getErr() == KeeperException.Code.AUTHFAILED.intValue()) {
+             state = States.AUTH_FAILED;                    
+             eventThread.queueEvent( new WatchedEvent(Watcher.Event.EventType.None, 
+                                                      Watcher.Event.KeeperState.AuthFailed, null) );            		            		
+         }
+         if (LOG.isDebugEnabled()) {
+             LOG.debug("Got auth sessionid:0x"
+                       + Long.toHexString(sessionId));
+         }
+         return;
+     }
+     // 表示当前的消息类型是一个notification
+     if (replyHdr.getXid() == -1) {
+         // -1 means notification
+         if (LOG.isDebugEnabled()) {
+             LOG.debug("Got notification sessionid:0x"
+                       + Long.toHexString(sessionId));
+         }
+         WatcherEvent event = new WatcherEvent();
+         event.deserialize(bbia, "response");
+
+         // convert from a server path to a client path
+         if (chrootPath != null) {
+             String serverPath = event.getPath();
+             if(serverPath.compareTo(chrootPath)==0)
+                 event.setPath("/");
+             else if (serverPath.length() > chrootPath.length())
+                 event.setPath(serverPath.substring(chrootPath.length()));
+             else {
+                 LOG.warn("Got server path " + event.getPath()
+                          + " which is too short for chroot path "
+                          + chrootPath);
+             }
+         }
+
+         WatchedEvent we = new WatchedEvent(event);
+         if (LOG.isDebugEnabled()) {
+             LOG.debug("Got " + we + " for sessionid 0x"
+                       + Long.toHexString(sessionId));
+         }
+
+         eventThread.queueEvent( we );
+         return;
+     }
+
+     // If SASL authentication is currently in progress, construct and
+     // send a response packet immediately, rather than queuing a
+     // response as with other packets.
+     if (clientTunneledAuthenticationInProgress()) {
+         GetSASLRequest request = new GetSASLRequest();
+         request.deserialize(bbia,"token");
+         zooKeeperSaslClient.respondToServer(request.getToken(),
+                                             ClientCnxn.this);
+         return;
+     }
+
+     Packet packet;
+     synchronized (pendingQueue) {
+         if (pendingQueue.size() == 0) {
+             throw new IOException("Nothing in the queue, but got "
+                                   + replyHdr.getXid());
+         }
+         // 因为当前这个数据包已经收到了响应，所以移除
+         packet = pendingQueue.remove();
+     }
+   
+     try {
+         if (packet.requestHeader.getXid() != replyHdr.getXid()) {
+             packet.replyHeader.setErr(
+                 KeeperException.Code.CONNECTIONLOSS.intValue());
+             throw new IOException("Xid out of order. Got Xid "
+                                   + replyHdr.getXid() + " with err " +
+                                   + replyHdr.getErr() +
+                                   " expected Xid "
+                                   + packet.requestHeader.getXid()
+                                   + " for a packet with details: "
+                                   + packet );
+         }
+
+         packet.replyHeader.setXid(replyHdr.getXid());
+         packet.replyHeader.setErr(replyHdr.getErr());
+         packet.replyHeader.setZxid(replyHdr.getZxid());
+         if (replyHdr.getZxid() > 0) {
+             lastZxid = replyHdr.getZxid();
+         }
+         if (packet.response != null && replyHdr.getErr() == 0) {
+             // 获得服务端的响应，反序列化到packet中
+             packet.response.deserialize(bbia, "response");
+         }
+
+         if (LOG.isDebugEnabled()) {
+             LOG.debug("Reading reply sessionid:0x"
+                       + Long.toHexString(sessionId) + ", packet:: " + packet);
+         }
+     } finally {
+         // 最后调用finishPacket完成处理
+         finishPacket(packet);
+     }
+ }
+```
+
+
+
+##### ClientCnxn.finishPacket()
+
+```java
+private void finishPacket(Packet p) {
+    if (p.watchRegistration != null) {
+        //注册到watchRegistration中
+        p.watchRegistration.register(p.replyHeader.getErr());
+    }
+
+    if (p.cb == null) {
+        synchronized (p) {
+            p.finished = true;
+            p.notifyAll();
+        }
+    } else {
+        p.finished = true;
+        //当前的数据包添加到等待事件通知的队列中
+        eventThread.queuePacket(p);
+    }
+}
+```
+
+
+
+##### ClientCnxn.queuePacket()
+
+```java
+public void queuePacket(Packet packet) {
+    if (wasKilled) {
+        synchronized (waitingEvents) {
+            if (isRunning) waitingEvents.add(packet);
+            else processEvent(packet);
+        }
+    } else {
+        waitingEvents.add(packet);
+    }
+}
+```
+
+
+
+### 事件触发
+
+​		假设事件触发通过setData方法
+
+
+
+```java
+public Stat setData(final String path, byte data[], int version)
+        throws KeeperException, InterruptedException {
+    final String clientPath = path;
+    PathUtils.validatePath(clientPath);
+
+    final String serverPath = prependChroot(clientPath);
+
+    RequestHeader h = new RequestHeader();
+    h.setType(ZooDefs.OpCode.setData);
+    SetDataRequest request = new SetDataRequest();
+    request.setPath(serverPath);
+    request.setData(data);
+    request.setVersion(version);
+    SetDataResponse response = new SetDataResponse();
+    ReplyHeader r = cnxn.submitRequest(h, request, response, null);
+    if (r.getErr() != 0) {
+        throw KeeperException.create(KeeperException.Code.get(r.getErr()),
+                                     clientPath);
+    }
+    return response.getStat();
+}
+```
 
