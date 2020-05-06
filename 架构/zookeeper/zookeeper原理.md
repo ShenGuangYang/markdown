@@ -130,3 +130,291 @@ leader 选举存在两个阶段：
 
 
 
+## watcher 原理
+
+​		zookeeper 的watcher 机制，总的来说可以分为三个过程：客户端注册watcher、服务器处理watcher和客户端回调watcher。
+
+
+
+### watcher demo
+
+```java
+public class App implements Watcher{
+    static ZooKeeper zooKeeper;
+    public static final String path = "/watcher";
+    static {
+        try {
+            zooKeeper = new ZooKeeper("192.168.2.100:2181", 500000, new App());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        zooKeeper.create(path, "0".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+        zooKeeper.exists(path, true);
+        zooKeeper.setData(path, "1".getBytes(), -1);
+        zooKeeper.setData(path, "2".getBytes(), -1);
+        zooKeeper.setData(path, "3".getBytes(), -1);
+        zooKeeper.setData(path, "4".getBytes(), -1);
+    }
+
+    @Override
+    public void process(WatchedEvent watchedEvent) {
+        if (watchedEvent.getType() == Event.EventType.NodeDataChanged) {
+            System.out.println("event.type: " + watchedEvent.getType());
+            try {
+                zooKeeper.exists(path, true);
+            } catch (KeeperException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
+
+
+
+### 注册watcher的前置准备
+
+
+
+#### ZooKeeper 的初始化
+
+```java
+public ZooKeeper(String connectString, int sessionTimeout, Watcher watcher,
+                 boolean canBeReadOnly)
+    throws IOException {
+    LOG.info("Initiating client connection, connectString=" + connectString
+             + " sessionTimeout=" + sessionTimeout + " watcher=" + watcher);
+	// 设置默认的watcher
+    watchManager.defaultWatcher = watcher;
+
+    ConnectStringParser connectStringParser = new ConnectStringParser(connectString);
+    HostProvider hostProvider = new StaticHostProvider(connectStringParser.getServerAddresses());
+    // 初始化ClientCnxn
+    cnxn = new ClientCnxn(connectStringParser.getChrootPath(),
+                          hostProvider, sessionTimeout, this, watchManager,
+                          getClientCnxnSocket(), canBeReadOnly);
+    // 启动ClientCnxn
+    cnxn.start();
+}
+
+```
+
+
+
+#### ClientCnxn 的初始化
+
+ClientCnxn是zookeeper客户端与服务端进行通信和事件通知处理的主要类，内部主要包含两个类：
+
+1. SendThread：负责客户端和服务端的数据通信，也包括时间信息的传输
+2. EventThread：主要是客户端回调注册的watcher进行通知处理
+
+```java
+public ClientCnxn(String chrootPath, HostProvider hostProvider, int sessionTimeout, 	ZooKeeper zooKeeper, ClientWatchManager watcher, 
+    ClientCnxnSocket clientCnxnSocket, long sessionId, byte[] sessionPasswd, boolean canBeReadOnly) {
+    this.zooKeeper = zooKeeper;
+    this.watcher = watcher;
+    this.sessionId = sessionId;
+    this.sessionPasswd = sessionPasswd;
+    this.sessionTimeout = sessionTimeout;
+    this.hostProvider = hostProvider;
+    this.chrootPath = chrootPath;
+
+    connectTimeout = sessionTimeout / hostProvider.size();
+    readTimeout = sessionTimeout * 2 / 3;
+    readOnly = canBeReadOnly;
+	// 初始化sendThread
+    sendThread = new SendThread(clientCnxnSocket);
+    // 初始化eventThread
+    eventThread = new EventThread();
+
+}
+```
+
+
+
+### 服务器接收请求处理流程
+
+
+
+启动zookeeper 的启动流程如下
+
+![image-20200506174459914](../../img/zookeeper/zk-2.png)
+
+
+
+上面时序图中红色部分为主要处理逻辑，分析该方法代码
+
+#### ZooKeeperServer.processPacket()
+
+```java
+ public void processPacket(ServerCnxn cnxn, ByteBuffer incomingBuffer) throws IOException {
+     // We have the request, now process and setup for next
+     InputStream bais = new ByteBufferInputStream(incomingBuffer);
+     BinaryInputArchive bia = BinaryInputArchive.getArchive(bais);
+     RequestHeader h = new RequestHeader();
+     h.deserialize(bia, "header");
+     // Through the magic of byte buffers, txn will not be
+     // pointing
+     // to the start of the txn
+     incomingBuffer = incomingBuffer.slice();
+     // 判断当前操作类型
+     if (h.getType() == OpCode.auth) { 
+         LOG.info("got auth packet " + cnxn.getRemoteSocketAddress());
+         AuthPacket authPacket = new AuthPacket();
+         ByteBufferInputStream.byteBuffer2Record(incomingBuffer, authPacket);
+         String scheme = authPacket.getScheme();
+         AuthenticationProvider ap = ProviderRegistry.getProvider(scheme);
+         Code authReturn = KeeperException.Code.AUTHFAILED;
+         if(ap != null) {
+             try {
+                 authReturn = ap.handleAuthentication(cnxn, authPacket.getAuth());
+             } catch(RuntimeException e) {
+                 LOG.warn("Caught runtime exception from AuthenticationProvider: " + scheme + " due to " + e);
+                 authReturn = KeeperException.Code.AUTHFAILED;                   
+             }
+         }
+         if (authReturn!= KeeperException.Code.OK) {
+             if (ap == null) {
+                 LOG.warn("No authentication provider for scheme: "
+                          + scheme + " has "
+                          + ProviderRegistry.listProviders());
+             } else {
+                 LOG.warn("Authentication failed for scheme: " + scheme);
+             }
+             // send a response...
+             ReplyHeader rh = new ReplyHeader(h.getXid(), 0,
+                                              KeeperException.Code.AUTHFAILED.intValue());
+             cnxn.sendResponse(rh, null, null);
+             // ... and close connection
+             cnxn.sendBuffer(ServerCnxnFactory.closeConn);
+             cnxn.disableRecv();
+         } else {
+             if (LOG.isDebugEnabled()) {
+                 LOG.debug("Authentication succeeded for scheme: "
+                           + scheme);
+             }
+             LOG.info("auth success " + cnxn.getRemoteSocketAddress());
+             ReplyHeader rh = new ReplyHeader(h.getXid(), 0,
+                                              KeeperException.Code.OK.intValue());
+             cnxn.sendResponse(rh, null, null);
+         }
+         return;
+     } else {
+         // 判断是否是sasl操作
+         if (h.getType() == OpCode.sasl) {
+             Record rsp = processSasl(incomingBuffer,cnxn);
+             ReplyHeader rh = new ReplyHeader(h.getXid(), 0, KeeperException.Code.OK.intValue());
+             cnxn.sendResponse(rh,rsp, "response"); // not sure about 3rd arg..what is it?
+             return;
+         }
+         // 最终进入这边处理
+         else {
+             // 封装 request 请求
+             Request si = new Request(cnxn, cnxn.getSessionId(), h.getXid(),h.getType(), incomingBuffer, cnxn.getAuthInfo());
+             si.setOwner(ServerCnxn.me);
+             // 提交请求
+             submitRequest(si);
+         }
+     }
+     cnxn.incrOutstandingRequests(h);
+ }
+```
+
+
+
+#### ZooKeeperServer.submitRequest()
+
+
+
+```java
+public void submitRequest(Request si) {
+     //processor 处理器，request 过来以后会经历一系列处理器的处理过程
+    if (firstProcessor == null) {
+        synchronized (this) {
+            try {
+               
+                while (state == State.INITIAL) {
+                    wait(1000);
+                }
+            } catch (InterruptedException e) {
+                LOG.warn("Unexpected interruption", e);
+            }
+            if (firstProcessor == null || state != State.RUNNING) {
+                throw new RuntimeException("Not started");
+            }
+        }
+    }
+    try {
+        touch(si.cnxn);
+        // 判断是否合法
+        boolean validpacket = Request.isValid(si.type);
+        if (validpacket) {
+            // 通过 firstProcessor 调用链发起请求
+            // 具体调用链如下
+            firstProcessor.processRequest(si);
+            if (si.cnxn != null) {
+                incInProcess();
+            }
+        } else {
+            LOG.warn("Received packet at server of unknown type " + si.type);
+            new UnimplementedRequestProcessor().processRequest(si);
+        }
+    } catch (MissingSessionException e) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Dropping request: " + e.getMessage());
+        }
+    } catch (RequestProcessorException e) {
+        LOG.error("Unable to process request:" + e.getMessage(), e);
+    }
+}
+```
+
+
+
+##### firstProcessor的请求链组成
+
+
+
+firstProcessor的初始化是在`zookeeperServer.setupRequestProcessors()` 中完成的。
+
+```java
+protected void setupRequestProcessors() {
+    RequestProcessor finalProcessor = new FinalRequestProcessor(this);
+    RequestProcessor syncProcessor = new SyncRequestProcessor(this, finalProcessor);
+    ((SyncRequestProcessor)syncProcessor).start();
+    firstProcessor = new PrepRequestProcessor(this, syncProcessor);
+    ((PrepRequestProcessor)firstProcessor).start();
+}
+```
+
+
+
+​		从上面我们可以看到 firstProcessor 的实例是一个 `PrepRequestProcessor`，而这个构造方法中又传递了一个 Processor 构成了一个调用链。
+
+​		所以具体的调用链是`PrepRequestProcessor` -> `SyncRequestProcessor` -> `FinalRequestProcessor`
+
+
+
+##### firstProcessor.processRequest(si);
+
+```java
+// firstProcessor.processRequest(si)
+// 具体执行的逻辑如下
+public void processRequest(Request request) {
+    // submittedRequests是LinkedBlockingQueue
+    
+    submittedRequests.add(request);
+}
+```
+
+
+
+
+
+
+
+
+
